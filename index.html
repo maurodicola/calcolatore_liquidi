@@ -55,7 +55,8 @@ if(Math.abs(g+p-100)>1e-7)throw Error('La somma delle percentuali VG e PG deve e
 const f=10**d,totalU=units(v,f),nicU=s===0?0:units(v*t/s,f),aromaU=units(v*a/100,f),restU=totalU-nicU-aromaU;
 if(totalU<=0)throw Error('Il volume è troppo piccolo per la precisione scelta.');
 const vgIdealU=totalU*g/100-nicU*b/100;
-if(restU<0||vgIdealU< -0.5||vgIdealU>restU+0.5)throw Error('Ricetta impossibile con questi parametri: le basette e l’aroma apportano più '+(restU>=0&&vgIdealU< -0.5?'VG':'PG')+' di quanto previsto. Modifica composizione finale, aroma, nicotina o tipo di basette.');
+if(restU<0)throw Error('Ricetta impossibile: basette e aroma ('+pretty((nicU+aromaU)/f)+' ml) superano il volume della miscela. Aumenta il volume o riduci nicotina e aroma.');
+if(vgIdealU< -0.5||vgIdealU>restU+0.5){const range=u=>pretty(100*(u+nicU*b/100)/totalU);throw Error('Ricetta impossibile con questi parametri: le basette e l’aroma apportano più '+(vgIdealU< -0.5?'VG':'PG')+' di quanto previsto. Con questi ingredienti la composizione può andare da '+range(0)+'% a '+range(restU)+'% VG. Modifica composizione finale, aroma, nicotina o tipo di basette.');}
 const vgU=Math.min(restU,Math.max(0,units(vgIdealU,1)));
 const ratio=u=>100*(u+nicU*b/100)/totalU;
 return {v,t,g,p,a,b,s,d,f,totalU,nicU,aromaU,restU,vgU,pgU:restU-vgU,vgIdealU,ratio};
@@ -139,7 +140,9 @@ for(const id of ['volume','target','vg','pg','aroma']){
   refresh();});
  input.addEventListener('blur',()=>{formatInput(id);refresh();});
 }
-for(const id of ['base','strength','aroma-size','dose-precision'])$(id).addEventListener('change',refresh);
+for(const id of ['base','strength','dose-precision'])$(id).addEventListener('change',refresh);
+// Volume e diluizione dipendono dal formato dell'aroma: cambiando formato si ripartono da zero.
+$('aroma-size').addEventListener('change',()=>{for(const k of ['volume','aroma']){$(k).value='';delete preciseValues[k];restoreHistory[k].length=0;$('restore-'+k).disabled=true;}refresh();$('aroma').focus();});
 for(const [id,index] of [['apply-vg',0],['apply-pg',1]])$(id).addEventListener('click',()=>{const option=compositionOptions[index];if(!option)return;rememberValues('composition');delete preciseValues.vg;delete preciseValues.pg;$('vg').value=display(option.ratio);$('pg').value=display(100-option.ratio);refreshAll();});
 $('apply-volume').addEventListener('click',()=>{const a=field('aroma');if(!Number.isFinite(a)||a<=0||a>100)return;rememberValues('volume');$('volume').value=display(Number($('aroma-size').value)*100/a);refreshAll();});
 $('apply-nicotine').addEventListener('click',()=>{const v=field('volume'),t=field('target'),s=field('strength');if($('volume').value===''||$('target').value===''||!Number.isFinite(v)||!Number.isFinite(t)||v<=0||t<0||t>s)return;const n=s===0?0:wholeBottles(v,t,s);rememberValues('nicotine');$('target').value=display(n*10*s/v);refreshAll();});
