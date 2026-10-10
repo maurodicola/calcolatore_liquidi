@@ -133,19 +133,23 @@ function updateNicotineHint(){$('apply-nicotine').disabled=true;
 }
 let compositionOptions=[];
 function updateCompositionHint(){
- const hint=$('composition-hint');$('apply-vg').disabled=true;$('apply-pg').disabled=true;compositionOptions=[];
+ const hint=$('composition-hint');compositionOptions=[];
+ for(const [id,text] of [['apply-vg','Applica VG'],['apply-pg','Applica PG']]){$(id).disabled=true;$(id).textContent=text;}
  let r;
  try{r=recipe(...values(),digits());}catch(e){hint.textContent='Completa una miscela valida per confrontare le dosi pratiche di VG e PG.';return;}
  const ml=u=>(u/r.f).toLocaleString('it-IT',{useGrouping:false,minimumFractionDigits:r.d,maximumFractionDigits:r.d});
  const describe=u=>ml(u)+' ml VG + '+ml(r.restU-u)+' ml PG ('+pretty(r.ratio(u))+'% VG / '+pretty(100-r.ratio(u))+'% PG)';
+ const composition=u=>pretty(r.ratio(u))+'% VG / '+pretty(100-r.ratio(u))+'% PG ('+ml(u)+' ml VG + '+ml(r.restU-u)+' ml PG'+(u===r.vgU?', in uso nelle dosi':'')+')';
  const label=precisionLabel(r.d);
  // La composizione è esatta quando coincide con quella richiesta a due decimali, come mostrata nei campi.
  const sameRatio=u=>Math.abs(r.ratio(u)-r.g)<0.005;
  if(sameRatio(r.vgU)){hint.textContent='Con dosi da '+label+' la composizione richiesta è esatta: '+describe(r.vgU)+'.';return;}
  const clamp=u=>Math.min(r.restU,Math.max(0,u));
  for(const u of new Set([clamp(Math.ceil(r.vgIdealU)),clamp(Math.floor(r.vgIdealU))]))if(!sameRatio(u))compositionOptions[r.ratio(u)>r.g?0:1]={vg:u,ratio:r.ratio(u)};
- $('apply-vg').disabled=!compositionOptions[0];$('apply-pg').disabled=!compositionOptions[1];
- hint.textContent='Con dosi da '+label+' non si ottiene esattamente '+pretty(r.g)+'% VG / '+pretty(r.p)+'% PG. '+(compositionOptions[0]?'Più VG: '+describe(compositionOptions[0].vg)+'. ':'')+(compositionOptions[1]?'Più PG: '+describe(compositionOptions[1].vg)+'. ':'')+'«Applica» imposta le percentuali VG/PG a quelle realmente ottenute.';
+ // I pulsanti mostrano la composizione che impostano: il primo quella con più VG, il secondo quella con meno VG.
+ for(const [id,index] of [['apply-vg',0],['apply-pg',1]]){const o=compositionOptions[index];if(o){$(id).disabled=false;$(id).textContent='Applica '+pretty(o.ratio)+'/'+pretty(100-o.ratio);}}
+ const options=compositionOptions.filter(Boolean);
+ hint.textContent='Con dosi da '+label+' non si ottiene esattamente '+pretty(r.g)+'% VG / '+pretty(r.p)+'% PG. '+(options.length>1?'Le composizioni ottenibili più vicine sono '+composition(options[0].vg)+' e '+composition(options[1].vg)+'.':'La composizione ottenibile più vicina è '+composition(options[0].vg)+'.')+' Con «Applica» la imposti nei campi.';
 }
 function updateAromaHint(){
  const shot=$('aroma-size').value==='20';
