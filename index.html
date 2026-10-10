@@ -9,8 +9,11 @@
 #form>.actions{grid-column:1/-1;grid-row:4;order:6}
 @media(max-width:1100px){#form>.row:nth-child(5){grid-column:1;grid-row:auto}#form>.error{grid-column:1;grid-row:auto;order:6}#form>.actions{grid-column:1;grid-row:auto;order:7}}
 .dose-precision{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.dose-precision label{font-size:12px;color:var(--muted)}.dose-precision select{font-size:13px;height:36px}.actions{flex-wrap:wrap}.precision-caption{font-size:11px;color:#c1d1ca;line-height:1.5;margin:10px 0 0}
-.volume-feedback{margin:14px 0 0;padding:12px;background:#ffffff0c;border-radius:8px;font-size:12px;line-height:1.6;color:#f0e6bc}.volume-feedback[hidden]{display:none}.volume-feedback p{margin:0}.volume-feedback .effective-title{font-weight:650;color:#fff;margin-bottom:4px}.volume-feedback .warn{color:#ffa7b0}
-</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><span class="offline">Un file. Sempre a portata di mano.</span></header><main class="layout"><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
+.volume-feedback{margin:14px 0 0;padding:12px;background:#ffffff0c;border-radius:8px;font-size:12px;line-height:1.6;color:#f0e6bc}.volume-feedback[hidden]{display:none}
+/* Piè di pagina subito sotto la colonna di sinistra; su schermi stretti torna in fondo. */
+.layout{grid-template-rows:auto 1fr}.layout>.card:first-of-type{grid-column:1;grid-row:1}.layout>.card:last-child{grid-column:2;grid-row:1/3}.layout>.footer{grid-column:1;grid-row:2;margin:0}
+@media(max-width:760px){.layout>.card:first-of-type,.layout>.card:last-child,.layout>.footer{grid-column:1;grid-row:auto}.layout>.footer{order:1}}.volume-feedback p{margin:0}.volume-feedback .effective-title{font-weight:650;color:#fff;margin-bottom:4px}.volume-feedback .warn{color:#ffa7b0}
+</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><span class="offline">Un file. Sempre a portata di mano.</span></header><main class="layout"><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione · <span id="version">Versione 1.2 · 10/10/2026</span></footer><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
 <form id="form" novalidate>
 <div class="row"><div class="volume-question"><label for="volume">Definisci il <span class="accent">volume</span> della miscela</label><p class="note volume-note" id="aroma-volume-note" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-volume">Applica</button><button type="button" id="restore-volume" disabled>Ripristina</button></div></div><div class="controls"><input id="volume" type="text" inputmode="decimal" min="0.01" step="any" value="" required><span class="unit">ml</span></div></div>
 <div class="row"><div class="volume-question"><label for="target">Scegli la <span class="accent">nicotina</span> finale</label><p class="note volume-note" id="nicotine-hint" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-nicotine">Applica</button><button type="button" id="restore-nicotine" disabled>Ripristina</button></div></div><div class="controls"><input id="target" type="text" inputmode="decimal" min="0" step="any" value="" required><span class="unit">mg/ml</span></div></div>
@@ -22,7 +25,7 @@
 <div class="ingredient"><div class="ingredient-line"><span class="dot vg"></span><span>Glicerolo · VG</span><span class="amount" id="out-vg">15.00 ml</span></div></div>
 <div class="ingredient"><div class="ingredient-line"><span class="dot pg"></span><span>Glicole · PG</span><span class="amount" id="out-pg">5.00 ml</span></div></div>
 <div class="ingredient"><div class="ingredient-line"><span class="dot nic"></span><span>Basette</span><span class="amount" id="out-nic">20.00 ml</span></div><p class="note" id="base-note">Basette 50/50 a 20 mg/ml, da utilizzare: 20.00 ml (2.00 flaconi da 10 ml)</p></div>
-<div class="ingredient"><div class="ingredient-line"><span class="dot aroma"></span><span>Aroma</span><span class="amount" id="out-aroma">10.00 ml</span></div></div><div class="total"><span>Volume complessivo</span><strong id="out-total">50.00 ml</strong></div><div class="volume-feedback" id="effective" hidden></div></div><p class="assumption">Aroma considerato in PG. Composizioni indicate nell’ordine VG/PG; flaconi di basetta da 10 ml.</p></section></main><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione · <span id="version">Versione 1.1 · 10/10/2026</span></footer>
+<div class="ingredient"><div class="ingredient-line"><span class="dot aroma"></span><span>Aroma</span><span class="amount" id="out-aroma">10.00 ml</span></div></div><div class="total"><span>Volume complessivo</span><strong id="out-total">50.00 ml</strong></div><div class="volume-feedback" id="effective" hidden></div></div><p class="assumption">Aroma considerato in PG. Composizioni indicate nell’ordine VG/PG; flaconi di basetta da 10 ml.</p></section></main>
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
@@ -46,6 +49,9 @@ const baseLabel=b=>b===100?'100 VG':b===0?'100 PG':b+'/'+(100-b);
 const units=(x,f)=>Math.round(Number((x*f).toPrecision(12)));
 // Dosi pratiche: nicotina, aroma e volume arrotondati alla precisione scelta; VG e PG si dividono il resto
 // nel modo più vicino alla composizione richiesta, tenendo conto delle basette realmente dosate.
+// Margine accettato sulla dose di VG (in unità di precisione): mezza dose, o di più se serve perché
+// ogni percentuale ottenibile, scritta a due decimali, sia accettata.
+const tolerance=totalU=>Math.max(0.5,totalU/20000+1e-9);
 function recipe(v,t,g,p,a,b,s,d){
 if(![v,t,g,p,a,b,s].every(Number.isFinite))throw Error('Compila tutti i campi con valori numerici validi.');
 if(v<=0)throw Error('La quantità finale deve essere maggiore di zero.');
@@ -56,30 +62,31 @@ const f=10**d,totalU=units(v,f),nicU=s===0?0:units(v*t/s,f),aromaU=units(v*a/100
 if(totalU<=0)throw Error('Il volume è troppo piccolo per la precisione scelta.');
 const vgIdealU=totalU*g/100-nicU*b/100;
 if(restU<0)throw Error('Ricetta impossibile: basette e aroma ('+pretty((nicU+aromaU)/f)+' ml) superano il volume della miscela. Aumenta il volume o riduci nicotina e aroma.');
-if(vgIdealU< -0.5||vgIdealU>restU+0.5)throw Error(impossibleMessage(v,t,g,p,a,b,s,totalU,nicU,aromaU,vgIdealU< -0.5));
+const tol=tolerance(totalU);
+if(vgIdealU< -tol||vgIdealU>restU+tol)throw Error(impossibleMessage(v,t,g,p,a,b,s,totalU,nicU,aromaU,vgIdealU< -tol));
 const vgU=Math.min(restU,Math.max(0,units(vgIdealU,1)));
 const ratio=u=>100*(u+nicU*b/100)/totalU;
 return {v,t,g,p,a,b,s,d,f,totalU,nicU,aromaU,restU,vgU,pgU:restU-vgU,vgIdealU,ratio};
 }
 // Spiega perché la composizione richiesta non è raggiungibile e cosa cambiare per ottenerla.
 function impossibleMessage(v,t,g,p,a,b,s,totalU,nicU,aromaU,tooMuchVG){
- const pct=u=>pretty(100*u/totalU),floor2=x=>Math.floor(x*100+1e-9)/100,ceil2=x=>Math.ceil(x*100-1e-9)/100,n=s===0?0:v*t/s,tips=[];
+ const pct=u=>pretty(100*u/totalU),floor2=x=>Math.floor(x*100+1e-9)/100,n=s===0?0:v*t/s,tips=[];
  let message;
  if(tooMuchVG){
   const vgU=nicU*b/100;
-  const minVG=pretty(ceil2(100*vgU/totalU));
+  const minVG=pct(vgU);
   message='Ricetta impossibile: le basette apportano già il '+pct(vgU)+'% di VG, quindi il VG non può scendere sotto il '+minVG+'%.';
   tips.push('imposta almeno '+minVG+'% VG');
   const tMax=floor2(s*(v*g/b)/v);if(b>0&&tMax<t)tips.push('scendi a '+pretty(tMax)+' mg/ml di nicotina');
  }else{
   const pgU=nicU*(1-b/100)+aromaU;
-  const maxVG=pretty(floor2(100-100*pgU/totalU));
+  const maxVG=pretty(100-100*pgU/totalU);
   message='Ricetta impossibile: basette e aroma apportano già il '+pct(pgU)+'% di PG, quindi il VG non può superare il '+maxVG+'%.';
   tips.push('imposta al massimo '+maxVG+'% VG');
   if(b<100){const tMax=floor2(s*((v*p/100-v*a/100)/(1-b/100))/v);if(tMax>0&&tMax<t)tips.push('scendi a '+pretty(tMax)+' mg/ml di nicotina');}
   const aMax=floor2(p-100*n*(1-b/100)/v);if(aMax>0&&aMax<a)tips.push('riduci l’aroma al '+pretty(aMax)+'%');
  }
- const bases=[...$('base').options].map(o=>Number(o.value)).filter(x=>x!==b&&totalU*g/100-nicU*x/100>=-0.5&&totalU*g/100-nicU*x/100<=totalU-nicU-aromaU+0.5).map(baseLabel);
+ const bases=[...$('base').options].map(o=>Number(o.value)).filter(x=>x!==b&&totalU*g/100-nicU*x/100>=-tolerance(totalU)&&totalU*g/100-nicU*x/100<=totalU-nicU-aromaU+tolerance(totalU)).map(baseLabel);
  if(bases.length)tips.push('usa basette '+(bases.length>1?bases.slice(0,-1).join(', ')+' o '+bases.at(-1):bases[0]));
  return message+' Per risolvere: '+tips.join('; oppure ')+'.';
 }
