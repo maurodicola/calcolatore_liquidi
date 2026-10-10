@@ -63,17 +63,19 @@ return {v,t,g,p,a,b,s,d,f,totalU,nicU,aromaU,restU,vgU,pgU:restU-vgU,vgIdealU,ra
 }
 // Spiega perché la composizione richiesta non è raggiungibile e cosa cambiare per ottenerla.
 function impossibleMessage(v,t,g,p,a,b,s,totalU,nicU,aromaU,tooMuchVG){
- const pct=u=>pretty(100*u/totalU),floor2=x=>Math.floor(x*100+1e-9)/100,n=s===0?0:v*t/s,tips=[];
+ const pct=u=>pretty(100*u/totalU),floor2=x=>Math.floor(x*100+1e-9)/100,ceil2=x=>Math.ceil(x*100-1e-9)/100,n=s===0?0:v*t/s,tips=[];
  let message;
  if(tooMuchVG){
   const vgU=nicU*b/100;
-  message='Ricetta impossibile: le basette apportano già il '+pct(vgU)+'% di VG, quindi il VG non può scendere sotto il '+pct(vgU)+'%.';
-  tips.push('imposta almeno '+pct(vgU)+'% VG');
+  const minVG=pretty(ceil2(100*vgU/totalU));
+  message='Ricetta impossibile: le basette apportano già il '+pct(vgU)+'% di VG, quindi il VG non può scendere sotto il '+minVG+'%.';
+  tips.push('imposta almeno '+minVG+'% VG');
   const tMax=floor2(s*(v*g/b)/v);if(b>0&&tMax<t)tips.push('scendi a '+pretty(tMax)+' mg/ml di nicotina');
  }else{
   const pgU=nicU*(1-b/100)+aromaU;
-  message='Ricetta impossibile: basette e aroma apportano già il '+pct(pgU)+'% di PG, quindi il VG non può superare il '+pretty(100-100*pgU/totalU)+'%.';
-  tips.push('imposta al massimo '+pretty(100-100*pgU/totalU)+'% VG');
+  const maxVG=pretty(floor2(100-100*pgU/totalU));
+  message='Ricetta impossibile: basette e aroma apportano già il '+pct(pgU)+'% di PG, quindi il VG non può superare il '+maxVG+'%.';
+  tips.push('imposta al massimo '+maxVG+'% VG');
   if(b<100){const tMax=floor2(s*((v*p/100-v*a/100)/(1-b/100))/v);if(tMax>0&&tMax<t)tips.push('scendi a '+pretty(tMax)+' mg/ml di nicotina');}
   const aMax=floor2(p-100*n*(1-b/100)/v);if(aMax>0&&aMax<a)tips.push('riduci l’aroma al '+pretty(aMax)+'%');
  }
@@ -134,12 +136,14 @@ function updateCompositionHint(){
  const hint=$('composition-hint');$('apply-vg').disabled=true;$('apply-pg').disabled=true;compositionOptions=[];
  let r;
  try{r=recipe(...values(),digits());}catch(e){hint.textContent='Completa una miscela valida per confrontare le dosi pratiche di VG e PG.';return;}
- const ml=u=>(u/r.f).toLocaleString('it-IT',{useGrouping:false,maximumFractionDigits:r.d});
+ const ml=u=>(u/r.f).toLocaleString('it-IT',{useGrouping:false,minimumFractionDigits:r.d,maximumFractionDigits:r.d});
  const describe=u=>ml(u)+' ml VG + '+ml(r.restU-u)+' ml PG ('+pretty(r.ratio(u))+'% VG / '+pretty(100-r.ratio(u))+'% PG)';
  const label=precisionLabel(r.d);
- if(Math.abs(r.vgIdealU-Math.round(r.vgIdealU))<1e-6&&r.vgU===Math.round(r.vgIdealU)){hint.textContent='Con dosi da '+label+' la composizione richiesta è esatta: '+describe(r.vgU)+'.';return;}
+ // La composizione è esatta quando coincide con quella richiesta a due decimali, come mostrata nei campi.
+ const sameRatio=u=>Math.abs(r.ratio(u)-r.g)<0.005;
+ if(sameRatio(r.vgU)){hint.textContent='Con dosi da '+label+' la composizione richiesta è esatta: '+describe(r.vgU)+'.';return;}
  const clamp=u=>Math.min(r.restU,Math.max(0,u));
- for(const u of new Set([clamp(Math.ceil(r.vgIdealU)),clamp(Math.floor(r.vgIdealU))]))compositionOptions[r.ratio(u)>r.g?0:1]={vg:u,ratio:r.ratio(u)};
+ for(const u of new Set([clamp(Math.ceil(r.vgIdealU)),clamp(Math.floor(r.vgIdealU))]))if(!sameRatio(u))compositionOptions[r.ratio(u)>r.g?0:1]={vg:u,ratio:r.ratio(u)};
  $('apply-vg').disabled=!compositionOptions[0];$('apply-pg').disabled=!compositionOptions[1];
  hint.textContent='Con dosi da '+label+' non si ottiene esattamente '+pretty(r.g)+'% VG / '+pretty(r.p)+'% PG. '+(compositionOptions[0]?'Più VG: '+describe(compositionOptions[0].vg)+'. ':'')+(compositionOptions[1]?'Più PG: '+describe(compositionOptions[1].vg)+'. ':'')+'«Applica» imposta le percentuali VG/PG a quelle realmente ottenute.';
 }
