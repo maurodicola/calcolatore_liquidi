@@ -132,7 +132,7 @@ $('form').addEventListener('submit',e=>{e.preventDefault();refreshAll()});
 for(const id of ['volume','target','vg','pg','aroma']){
  const input=$(id);
  input.addEventListener('input',()=>{const pos=input.selectionStart;if(input.value.includes('.')){input.value=input.value.replaceAll('.',',');if(pos!==null&&input.setSelectionRange)input.setSelectionRange(pos,pos);}
-  const other={vg:'pg',pg:'vg'}[id],v=field(id);if(other&&input.value.trim()!==''&&v>=0&&v<=100)$(other).value=display(100-v);
+  const other={vg:'pg',pg:'vg'}[id],v=field(id);if(other&&input.value.trim()!==''&&v>=0&&v<=100){const rest=100-v;preciseValues[other]={shown:fixed(rest),value:rest};$(other).value=preciseValues[other].shown;}
   refresh();});
  input.addEventListener('blur',()=>{formatInput(id);refresh();});
 }
