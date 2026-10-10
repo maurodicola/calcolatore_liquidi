@@ -86,12 +86,15 @@ function updateEffective(r){
  for(const [text,warn] of lines){const p=document.createElement('p');p.textContent=text;if(warn)p.className='warn';box.append(p);}
  box.hidden=false;
 }
+// Un suggerimento è già applicato quando il campo mostra lo stesso valore a due decimali.
+const applied=(k,x)=>Math.abs(field(k)-x)<0.005;
 function updateAromaVolume(){
  const value=$('aroma').value.trim(),percent=field('aroma'),size=Number($('aroma-size').value);
  const valid=value!==''&&Number.isFinite(percent)&&percent>0&&percent<=100;
- $('apply-volume').disabled=!valid;
+ const suggested=size*100/percent,done=valid&&applied('volume',suggested);
+ $('apply-volume').disabled=!valid||done;
  const reference=size===20?'20 ml di aroma (shot)':'10 ml di aroma';
- $('aroma-volume-note').textContent=valid?'Per impiegare '+reference+' al '+percent.toLocaleString('it-IT',{maximumFractionDigits:6})+'%, volume suggerito: '+(size*100/percent).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+' ml':'Inserisci una diluizione superiore a zero per conoscere il volume ottenibile con '+reference+'.';
+ $('aroma-volume-note').textContent=valid?'Per impiegare '+reference+' al '+percent.toLocaleString('it-IT',{maximumFractionDigits:6})+'%, volume suggerito: '+suggested.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+' ml'+(done?' (già impostato).':''):'Inserisci una diluizione superiore a zero per conoscere il volume ottenibile con '+reference+'.';
 }
 function wholeBottles(v,t,s){const a=field('aroma'),ar=Number.isFinite(a)&&a>=0&&a<=100?v*a/100:0;return Math.max(0,Math.min(Math.round(v*t/s/10),Math.floor((v-ar)/10+1e-9)));}
 function updateNicotineHint(){$('apply-nicotine').disabled=true;
@@ -99,11 +102,11 @@ function updateNicotineHint(){$('apply-nicotine').disabled=true;
  const [v,t,strength]=values;
  const hint=$('nicotine-hint');
  if(!values.every(Number.isFinite)||v<=0||t<0||strength<0||t>strength){hint.textContent='Completa volume e nicotina: qui troverai la gradazione più vicina ottenibile con basette intere.';return;}
- $('apply-nicotine').disabled=false;
  if(strength===0){hint.textContent='Con basette a 0 mg/ml il liquido resta senza nicotina.';return;}
  const bottles=wholeBottles(v,t,strength);
- const concentration=bottles*10*strength/v;
- hint.textContent='Per impiegare '+bottles+' '+(bottles===1?'basetta intera':'basette intere')+' da 10 ml: '+concentration.toLocaleString('it-IT',{maximumFractionDigits:4})+' mg/ml di nicotina finale'+(bottles===0?' (senza nicotina)':'')+'.';
+ const concentration=bottles*10*strength/v,done=applied('target',concentration);
+ $('apply-nicotine').disabled=done;
+ hint.textContent='Per impiegare '+bottles+' '+(bottles===1?'basetta intera':'basette intere')+' da 10 ml: '+concentration.toLocaleString('it-IT',{maximumFractionDigits:4})+' mg/ml di nicotina finale'+(bottles===0?' (senza nicotina)':'')+(done?' (già impostata)':'')+'.';
 }
 let compositionOptions=[];
 function updateCompositionHint(){
@@ -121,7 +124,7 @@ function updateCompositionHint(){
 }
 function updateAromaHint(){
  const shot=$('aroma-size').value==='20';
- $('apply-aroma').disabled=!shot;
+ $('apply-aroma').disabled=!shot||applied('aroma',100/3);
  $('aroma-hint').textContent=shot?'Per lo shot puoi partire da: 33,333…%. Applica la percentuale con la precisione necessaria; puoi modificarla liberamente.':'Usa la diluizione indicata per il tuo aroma. Lo zero prepara una miscela senza aroma.';
 }
 // Ricalcolo automatico: ogni modifica aggiorna suggerimenti e dosi; con campi incompleti i risultati si svuotano.
