@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Atelier Liquidi · Calcolatore personale</title>
+<style>
+:root{--ink:#203b3b;--muted:#617371;--paper:#f5f3ec;--red:#b52b3b;--teal:#245c59;--line:#d9e0d9}*{box-sizing:border-box}html{scrollbar-gutter:stable}body{margin:0;padding:24px 32px;background:var(--paper);color:var(--ink);font-family:"Segoe UI",Calibri,Arial,sans-serif;font-size:16px}.masthead{max-width:1500px;margin:0 auto 24px;display:flex;justify-content:space-between;align-items:center;gap:20px}.brand{display:flex;align-items:center;gap:14px}.brand-mark{width:44px;height:44px;background:var(--teal);color:white;border-radius:14px 14px 14px 3px;display:grid;place-items:center;font-family:Georgia,serif;font-size:26px}.brand-kicker{font-size:11px;letter-spacing:2px;font-weight:700;color:var(--muted);margin:0 0 3px}h1{font-family:Georgia,"Times New Roman",serif;font-size:34px;font-weight:400;letter-spacing:-1px;margin:0;line-height:1.15}.offline{font-size:12px;color:var(--teal);background:#e5ebe2;padding:8px 12px;border-radius:30px;white-space:nowrap}.layout{max-width:1500px;margin:auto;display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:24px;align-items:start}.card{min-width:0}.card:first-child{padding:0}.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.4px;margin:0 0 6px;color:var(--teal)}.intro{margin:0 0 18px;color:var(--muted);font-size:15px;line-height:1.5}#form{display:grid;grid-template-columns:1fr 1fr;gap:16px}.row{background:#fffefa;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0;box-shadow:0 3px 16px #203b3b06;position:relative}.row:nth-child(1){order:1}.row:nth-child(2){order:2}.row:nth-child(3){order:3}.row:nth-child(4){order:4}.row:nth-child(5){order:5;grid-column:1/-1;flex-direction:row;justify-content:space-between;align-items:center}.row label,.question{font-size:16px;font-weight:650;line-height:1.4}.accent{color:var(--red)}.volume-question{display:contents}.row .volume-question>label,.row .question{order:0}.controls{display:flex;gap:8px;align-items:center;order:1;flex-wrap:wrap}.unit{color:var(--muted);font-size:13px;font-weight:600}input,select{font:inherit;background:#f0f4ef;color:var(--ink);border:1px solid transparent;border-radius:8px;padding:8px 10px;height:40px;min-width:0}input{width:130px;text-align:right;font-size:20px;font-variant-numeric:tabular-nums}input.small{width:100px;font-size:18px}select{font-size:15px;max-width:100%;cursor:pointer}input:focus,select:focus{outline:2px solid var(--teal);outline-offset:2px;background:white}.note{font-size:13px;line-height:1.5;color:var(--muted);margin:0}.volume-note{order:3;min-height:4.5em}.hint-actions{order:4;display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}.hint-actions button{font:inherit;font-size:12px;font-weight:650;color:var(--teal);background:#e7efea;border:0;border-radius:6px;min-height:32px;padding:6px 10px;cursor:pointer}.hint-actions button[id^="restore"]{background:transparent;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}button:disabled{opacity:.4;cursor:default}button:focus-visible{outline:2px solid var(--red);outline-offset:3px}.aroma-choice{order:2;display:flex;align-items:center;flex-wrap:wrap;gap:8px}.aroma-choice label{font-size:12px;font-weight:400;color:var(--muted)}.aroma-choice select{font-size:12px;height:30px;padding:4px 7px}.actions{order:6;grid-column:1/-1;display:flex;align-items:center;gap:20px;margin-top:2px}.calculate{display:flex;gap:10px;align-items:center;justify-content:center;padding:12px 24px;font:inherit;font-weight:650;font-size:16px;border:0;border-radius:9px;background:var(--teal);color:#fff;cursor:pointer;min-height:46px}.calculate:hover{background:#184744}.calculate svg{width:18px;height:20px}.reset{background:transparent;border:0;font:inherit;font-size:13px;color:var(--muted);cursor:pointer;padding:10px}.error{order:7;grid-column:1/-1;background:#f7e5e4;color:#922637;border-radius:8px;font-size:13px;line-height:1.5;padding:10px 14px;min-height:3em;margin:0}.error[hidden]{display:block;visibility:hidden}.card:last-child{background:var(--ink);color:#fff;padding:26px;border-radius:4px 20px 20px 20px;position:sticky;top:20px;box-shadow:0 15px 35px #203b3b12}.card:last-child .eyebrow{color:#c3d6c9;font-size:12px;margin-bottom:20px}.bar{height:12px;display:flex;overflow:hidden;border-radius:4px;background:#ffffff18}.bar span{flex-shrink:0;height:100%;transition:width .2s}.vg{background:#83b8ae}.pg{background:#b8c8e0}.nic{background:#ec8c96}.aroma{background:#d4c17f}.caption{color:#bccbc7;font-size:10px;letter-spacing:1.5px;margin:10px 0 22px}.ingredient{padding:14px 0}.ingredient-line{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500}.dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}.amount{margin-left:auto;font-size:24px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}.card:last-child .note{color:#c1d1ca;font-size:12px;margin-top:7px}.rounded-note{min-height:1.5em;text-align:right}.card:last-child .rounded-note{color:#ffa7b0}#base-note{min-height:4.5em}.total{margin:20px -26px 0;padding:20px 26px;background:#ffffff0c;display:flex;justify-content:space-between;align-items:center;font-size:14px}.total strong{font-family:Georgia,serif;font-size:30px;font-weight:400;color:#f0e6bc}.rounded-total{padding-top:4px}.assumption{font-size:11px;color:#b4c5bd;line-height:1.6;margin:22px 0 0}.footer{max-width:1500px;margin:16px auto 0;font-size:11px;color:var(--muted)}@media(min-width:1200px) and (max-height:850px){body{padding-top:16px}.masthead{margin-bottom:16px}.row{padding:14px;gap:8px}#form{gap:12px}.card:last-child{padding-top:20px;padding-bottom:20px}.ingredient{padding:12px 0}}@media(max-width:1100px){.layout{grid-template-columns:minmax(0,1fr) 320px}.card:last-child{padding:20px}#form{grid-template-columns:1fr}.row:nth-child(5),.actions,.error{grid-column:1}.total{margin-left:-20px;margin-right:-20px;padding:18px 20px}}@media(max-width:760px){body{padding:20px 14px}.layout{grid-template-columns:1fr;gap:20px}.card:last-child{position:static}.offline{display:none}h1{font-size:29px}.row:nth-child(5){flex-direction:column;align-items:flex-start}.actions{flex-wrap:wrap;gap:8px}.amount{font-size:23px}}@media(prefers-reduced-motion:reduce){.bar span{transition:none}}
+
+/* Basette ed errore affiancati, sopra le azioni. */
+#form>.row:nth-child(5){grid-column:1;grid-row:3;order:5;flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap}
+#form>.error{grid-column:2;grid-row:3;order:5;display:flex;align-items:center;margin:0;min-height:76px}
+#form>.actions{grid-column:1/-1;grid-row:4;order:6}
+@media(max-width:1100px){#form>.row:nth-child(5){grid-column:1;grid-row:auto}#form>.error{grid-column:1;grid-row:auto;order:6}#form>.actions{grid-column:1;grid-row:auto;order:7}}
+.dose-precision{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.dose-precision label{font-size:12px;color:var(--muted)}.dose-precision select{font-size:13px;height:36px}.rounded-note{display:none}.actions{flex-wrap:wrap}.precision-caption{font-size:11px;color:#c1d1ca;line-height:1.5;margin:10px 0 0}
+.volume-feedback{margin:14px 0 0;padding:12px;background:#ffffff0c;border-radius:8px;font-size:12px;line-height:1.6;color:#f0e6bc}.volume-feedback[hidden]{display:none}
+</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><span class="offline">Un file. Sempre a portata di mano.</span></header><main class="layout"><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
+<form id="form" novalidate>
+<div class="row"><div class="volume-question"><label for="volume">Definisci il <span class="accent">volume</span> della miscela</label><p class="note volume-note" id="aroma-volume-note" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-volume">Applica</button><button type="button" id="restore-volume" disabled>Ripristina</button></div></div><div class="controls"><input id="volume" type="text" inputmode="decimal" min="0.01" step="any" value="" required><span class="unit">ml</span></div></div>
+<div class="row"><div class="volume-question"><label for="target">Scegli la <span class="accent">nicotina</span> finale</label><p class="note volume-note" id="nicotine-hint" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-nicotine">Applica</button><button type="button" id="restore-nicotine" disabled>Ripristina</button></div></div><div class="controls"><input id="target" type="text" inputmode="decimal" min="0" step="any" value="" required><span class="unit">mg/ml</span></div></div>
+<div class="row composition"><div class="volume-question"><span class="question">Bilancia la <span class="accent">composizione VG / PG</span></span><p class="note volume-note" id="composition-hint" aria-live="polite"></p><div class="hint-actions" id="composition-actions"><button type="button" id="apply-vg">Applica VG</button><button type="button" id="apply-pg">Applica PG</button><button type="button" id="restore-composition" disabled>Ripristina</button></div></div><div class="controls"><input class="small" id="vg" aria-label="Percentuale finale VG" type="text" inputmode="decimal" min="0" max="100" step="any" value="" required><span class="unit">% VG</span><input class="small" id="pg" aria-label="Percentuale finale PG" type="text" inputmode="decimal" min="0" max="100" step="any" value="" required><span class="unit">% PG</span></div></div>
+<div class="row"><div class="volume-question"><label for="aroma">Imposta la diluizione dell’<span class="accent">aroma</span></label><div class="aroma-choice"><label for="aroma-size">Formato aroma</label><select id="aroma-size"><option value="10">Aroma da 10 ml</option><option value="20">Shot da 20 ml</option></select></div><p class="note volume-note" id="aroma-hint" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-aroma" disabled>Applica</button><button type="button" id="restore-aroma" disabled>Ripristina</button></div></div><div class="controls"><input id="aroma" type="text" inputmode="decimal" min="0" max="100" step="any" value="" required><span class="unit">%</span></div></div>
+<div class="row"><span class="question">Seleziona le tue <span class="accent">basette</span></span><div class="controls"><select id="base" aria-label="Composizione delle basette VG/PG"><option value="50">50/50</option><option value="70">70/30</option><option value="80">80/20</option><option value="100">100 VG</option><option value="0">100 PG</option></select><select id="strength" aria-label="Nicotina delle basette in mg/ml"><option value="20">20 mg</option><option value="18">18 mg</option><option value="12">12 mg</option><option value="9">9 mg</option><option value="6">6 mg</option><option value="0">0 mg</option></select></div></div>
+<div class="actions"><button class="calculate" type="submit"><svg viewBox="0 0 24 26" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 2h8M10 2v9L4 21c-.8 1.4 0 3 1.8 3h12.4c1.8 0 2.6-1.6 1.8-3l-6-10V2M7 17h10"/></svg>Calcola le dosi</button><button class="reset" id="reset" type="button">Nuova miscela</button><div class="dose-precision"><label for="dose-precision">Precisione delle dosi</label><select id="dose-precision"><option value="0">1 ml</option><option value="1">0,1 ml</option><option value="2">0,01 ml</option></select></div></div><p id="error" class="error" role="alert" hidden></p></form></section>
+<section class="card" aria-labelledby="result-title"><p class="eyebrow" id="result-title">02 / Le dosi da preparare</p><div id="results" aria-live="polite"><div class="bar" aria-label="Proporzioni degli ingredienti"><span id="bar-vg" class="vg" style="width:30%"></span><span id="bar-pg" class="pg" style="width:10%"></span><span id="bar-nic" class="nic" style="width:40%"></span><span id="bar-aroma" class="aroma" style="width:20%"></span></div><p class="caption">DISTRIBUZIONE DEGLI INGREDIENTI</p><p class="precision-caption" id="precision-caption">Dosi arrotondate a 1 ml. Il totale è la somma delle dosi.</p>
+<div class="ingredient"><div class="ingredient-line"><span class="dot vg"></span><span>Glicerolo · VG</span><span class="amount" id="out-vg">15.00 ml</span></div><p class="note rounded-note" id="rounded-vg"></p></div>
+<div class="ingredient"><div class="ingredient-line"><span class="dot pg"></span><span>Glicole · PG</span><span class="amount" id="out-pg">5.00 ml</span></div><p class="note rounded-note" id="rounded-pg"></p></div>
+<div class="ingredient"><div class="ingredient-line"><span class="dot nic"></span><span>Basette</span><span class="amount" id="out-nic">20.00 ml</span></div><p class="note" id="base-note">Basette 50/50 a 20 mg/ml, da utilizzare: 20.00 ml (2.00 flaconi da 10 ml)</p><p class="note rounded-note" id="rounded-nic"></p></div>
+<div class="ingredient"><div class="ingredient-line"><span class="dot aroma"></span><span>Aroma</span><span class="amount" id="out-aroma">10.00 ml</span></div><p class="note rounded-note" id="rounded-aroma"></p></div><div class="total"><span>Volume complessivo</span><strong id="out-total">50.00 ml</strong></div><p class="note rounded-note rounded-total" id="rounded-total"></p><p class="volume-feedback" id="volume-feedback" aria-live="polite" hidden></p></div><p class="assumption">Aroma considerato in PG. Composizioni indicate nell’ordine VG/PG; flaconi di basetta da 10 ml.</p></section></main><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione.</footer>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+let practicalDoses=null;
+const restoreHistory={volume:[],nicotine:[],composition:['vg','pg'],aroma:[]};
+const groupKeys={volume:['volume'],nicotine:['target'],composition:['vg','pg'],aroma:['aroma']};
+const num=value=>{const s=String(value).trim().replace('.',',');return /^[-+]?(?:\d+(?:,\d*)?|,\d+)$/.test(s)?Number(s.replace(',','.')):NaN};
+const preciseValues={};
+const field=k=>{const stored=preciseValues[k];return stored&&stored.shown===$(k).value?stored.value:num($(k).value)};
+function formatInput(k){const input=$(k),value=field(k);if(input.value.trim()===''||!Number.isFinite(value)){delete preciseValues[k];return;}const shown=value.toLocaleString('it-IT',{useGrouping:false,minimumFractionDigits:2,maximumFractionDigits:2});preciseValues[k]={shown,value};input.value=shown;}
+function formatInputs(){for(const k of ['volume','target','vg','pg','aroma'])formatInput(k);}
+const display=x=>{const n=Number(x),clean=Math.abs(n-Math.round(n))<1e-10?Math.round(n):Number(n.toPrecision(15));return String(clean).replace('.',',')};
+const fixed=x=>x.toLocaleString('it-IT',{useGrouping:false,minimumFractionDigits:2,maximumFractionDigits:2});
+function rememberValues(group){restoreHistory[group].push(group==='composition'?{practicalDoses:practicalDoses?{...practicalDoses}:null,vg:{shown:$('vg').value,value:field('vg')},pg:{shown:$('pg').value,value:field('pg')}}:Object.fromEntries(groupKeys[group].map(k=>[k,{shown:$(k).value,value:field(k)}])));$('restore-'+group).disabled=false;}
+const inputKeys=['volume','target','vg','pg','aroma','base','strength'];
+function refreshAll(){formatInputs();updateAromaHint();updateAromaVolume();updateNicotineHint();updateCompositionHint();if(inputKeys.every(k=>$(k).value!==''))calculate();else{clearResults();$('error').hidden=true;}}
+function recipe(v,t,g,p,a,b,s){
+if(![v,t,g,p,a,b,s].every(Number.isFinite))throw Error('Compila tutti i campi con valori numerici validi.');
+if(v<=0)throw Error('La quantità finale deve essere maggiore di zero.');
+if(t<0||s<0||t>s)throw Error('La nicotina finale deve essere compresa tra zero e la concentrazione delle basette.');
+if([g,p,a,b].some(x=>x<0||x>100))throw Error('Le percentuali devono essere comprese tra 0 e 100.');
+if(Math.abs(g+p-100)>1e-7)throw Error('La somma delle percentuali VG e PG deve essere 100%.');
+const n=s===0?0:v*t/s,ar=v*a/100,gv=v*g/100-n*b/100,pv=v*p/100-n*(1-b/100)-ar;
+if(gv< -1e-7||pv< -1e-7)throw Error('Ricetta impossibile con questi parametri: le basette e l’aroma apportano più '+(gv< -1e-7?'VG':'PG')+' di quanto previsto. Modifica composizione finale, aroma, nicotina o tipo di basette.');
+return {vg:Math.max(0,gv),pg:Math.max(0,pv),nic:n,aroma:ar,total:v};
+}
+function clearResults(){$('volume-feedback').hidden=true;for(const k of ['vg','pg','nic','aroma']){$('out-'+k).textContent='—';$('rounded-'+k).textContent='';$('bar-'+k).style.width='0%'}$('out-total').textContent='—';$('rounded-total').textContent='';$('base-note').textContent='Le dosi delle basette appariranno dopo il calcolo.'}
+function calculate(){try{
+ const r=recipe(...inputKeys.map(k=>$(k).value.trim()===''?NaN:field(k)));
+ const digits=Number($('dose-precision').value),factor=10**digits;
+ const units=Object.fromEntries(['vg','pg','nic','aroma'].map(k=>[k,Math.round(((practicalDoses?practicalDoses[k]:r[k])+Number.EPSILON)*factor)]));
+ const fmt=x=>x.toLocaleString('it-IT',{useGrouping:false,minimumFractionDigits:Math.min(2,digits),maximumFractionDigits:Math.min(2,digits)});
+ const totalUnits=Object.values(units).reduce((sum,n)=>sum+n,0);
+ for(const k of ['vg','pg','nic','aroma']){$('out-'+k).textContent=fmt(units[k]/factor)+' ml';$('rounded-'+k).textContent='';$('bar-'+k).style.width=(totalUnits?100*units[k]/totalUnits:0)+'%';}
+ $('out-total').textContent=fmt(totalUnits/factor)+' ml';updateVolumeFeedback(r,totalUnits/factor,digits);$('rounded-total').textContent='';
+ const b=field('base');
+ $('base-note').textContent='Basette '+b+'/'+(100-b)+' a '+$('strength').value+' mg/ml · '+fixed(units.nic/factor/10)+' flaconi da 10 ml.';
+ $('precision-caption').textContent=(practicalDoses?'Dosi pratiche: '+practicalDoses.preference+'. Volume, nicotina e aroma richiesti invariati. ':'')+'Dosi arrotondate a '+['1','0,1','0,01'][digits]+' ml. Il totale è la somma delle dosi.';
+ $('error').hidden=true;
+ }catch(e){clearResults();$('error').textContent=e.message;$('error').hidden=false;}}
+function updateVolumeFeedback(r,total,digits){
+ const delta=total-r.total,feedback=$('volume-feedback');
+ if(Math.round((total+Number.EPSILON)*100)===Math.round((r.total+Number.EPSILON)*100)){feedback.hidden=true;feedback.textContent='';return;}
+ const pretty=n=>n.toLocaleString('it-IT',{useGrouping:false,maximumFractionDigits:2});
+ let message='Ottieni '+pretty(total)+' ml: '+pretty(Math.abs(delta))+' ml in '+(delta>0?'più':'meno')+' rispetto ai '+pretty(r.total)+' ml richiesti.';
+ const alternative=Math.round(r.total),residual=alternative-Math.round(r.nic)-Math.round(r.aroma);
+ if(residual>=0&&alternative>0&&Math.abs(alternative-r.total)+1e-7<Math.abs(delta))message+=' Scegli «Applica VG» oppure «Applica PG» per ottenere '+pretty(alternative)+' ml con dosi intere.';
+ if(digits===0&&Math.abs(r.total-Math.round(r.total))>1e-7)message+=' Con dosi intere, il totale più vicino al volume richiesto è '+pretty(alternative)+' ml.';
+ if(digits<2)message+=' Per dosi più precise, seleziona '+(digits===0?'0,1 ml o 0,01 ml':'0,01 ml')+' in «Precisione delle dosi».';
+ feedback.textContent=message;feedback.hidden=false;
+}
+$('dose-precision').addEventListener('change',()=>{
+ practicalDoses=null;restoreHistory.composition.length=0;$('restore-composition').disabled=true;
+ const digits=Number($('dose-precision').value);
+ $('precision-caption').textContent=(practicalDoses?'Dosi pratiche: '+practicalDoses.preference+'. Volume, nicotina e aroma richiesti invariati. ':'')+'Dosi arrotondate a '+['1','0,1','0,01'][digits]+' ml. Il totale è la somma delle dosi.';
+ if(inputKeys.every(k=>$(k).value.trim()!==''))calculate();
+});
+function updateAromaVolume(){
+ const value=$('aroma').value.trim(),percent=field('aroma'),size=Number($('aroma-size').value);
+ const valid=value!==''&&Number.isFinite(percent)&&percent>0&&percent<=100;
+ $('apply-volume').disabled=!valid;
+ const reference=size===20?'20 ml di aroma (shot)':'10 ml di aroma';
+ $('aroma-volume-note').textContent=valid?'Per impiegare '+reference+' al '+percent.toLocaleString('it-IT',{maximumFractionDigits:6})+'%, volume suggerito: '+(size*100/percent).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+' ml':'Inserisci una diluizione superiore a zero per conoscere il volume ottenibile con '+reference+'.';
+}
+$('aroma-size').addEventListener('change',()=>{updateAromaVolume();updateAromaHint();});
+$('aroma').addEventListener('input',updateAromaVolume);updateAromaVolume();clearResults();
+
+function updateNicotineHint(){$('apply-nicotine').disabled=true;
+ const values=['volume','target','strength'].map(k=>$(k).value.trim()===''?NaN:field(k));
+ const [v,t,strength]=values;
+ const hint=$('nicotine-hint');
+ if(!values.every(Number.isFinite)||v<=0||t<0||strength<0||t>strength){hint.textContent='Completa volume e nicotina: qui troverai la gradazione più vicina ottenibile con basette intere.';return;}
+ if(strength===0){$('apply-nicotine').disabled=false;hint.textContent='Con basette a 0 mg/ml il liquido resta senza nicotina.';return;}
+ $('apply-nicotine').disabled=false;
+ const bottles=Math.min(Math.round(v*t/strength/10),Math.floor((v+1e-9)/10));
+ const concentration=bottles*10*strength/v;
+ hint.textContent='Per impiegare '+bottles+' '+(bottles===1?'basetta intera':'basette intere')+' da 10 ml: '+concentration.toLocaleString('it-IT',{maximumFractionDigits:4})+' mg/ml di nicotina finale'+(bottles===0?' (senza nicotina)':'')+'.';
+}
+for(const id of ['volume','target','strength'])$(id).addEventListener(id==='strength'?'change':'input',updateNicotineHint);
+updateNicotineHint();
+
+$('form').addEventListener('submit',e=>{e.preventDefault();formatInputs();calculate()});
+for(const [a,b] of [['vg','pg'],['pg','vg']])$(a).addEventListener('input',()=>{const v=field(a);if($(a).value!==''&&v>=0&&v<=100)$(b).value=display(100-v)});
+
+let compositionOptions=[];
+function updateCompositionHint(){
+ const hint=$('composition-hint');$('apply-vg').disabled=true;$('apply-pg').disabled=true;compositionOptions=[];
+ try{
+ const values=['volume','target','vg','pg','aroma','base','strength'].map(k=>$(k).value.trim()===''?NaN:field(k));
+ const r=recipe(...values),b=values[5]/100;
+ const roundedVolume=Math.round(r.total),nic=Math.round(r.nic),aroma=Math.round(r.aroma);
+ const remainder=roundedVolume-nic-aroma;
+ if(remainder<0||roundedVolume<=0)throw Error();
+ const highVG=Math.min(remainder,Math.ceil(r.vg-1e-9));
+ const highPG=remainder-Math.min(remainder,Math.max(0,Math.floor(r.vg+1e-9)));
+ compositionOptions=[{vg:highVG,pg:remainder-highVG,preference:'preferenza VG'},{vg:remainder-highPG,pg:highPG,preference:'preferenza PG'}].map(o=>({...o,nic,aroma,ratioVG:100*(o.vg+nic*b)/roundedVolume,ratioPG:100*(o.pg+nic*(1-b)+aroma)/roundedVolume}));
+ const currentVG=Math.round(r.vg),currentPG=Math.round(r.pg);
+ if(currentVG+currentPG===remainder&&Math.round(100*(currentVG+nic*b)/roundedVolume*100)===Math.round(values[2]*100)){
+ const same={vg:currentVG,pg:currentPG,nic,aroma,ratioVG:values[2],ratioPG:values[3]};
+ compositionOptions=[{...same,preference:'preferenza VG'},{...same,preference:'preferenza PG'}];
+ }
+ const balanced=compositionOptions.find(o=>Math.abs(o.ratioVG-50)<1e-9&&Math.abs(o.ratioPG-50)<1e-9);
+ if(balanced)compositionOptions=[{...balanced,ratioVG:50,ratioPG:50,preference:'preferenza VG'},{...balanced,ratioVG:50,ratioPG:50,preference:'preferenza PG'}];
+ $('apply-vg').disabled=false;$('apply-pg').disabled=false;
+ hint.textContent=compositionOptions.map((o,i)=>(i===0?'Più VG':'Più PG')+': '+o.vg+' ml VG + '+o.pg+' ml PG ('+o.ratioVG.toLocaleString('it-IT',{maximumFractionDigits:2})+'% VG / '+o.ratioPG.toLocaleString('it-IT',{maximumFractionDigits:2})+'% PG).').join(' ')+' I pulsanti aggiornano le percentuali VG/PG delle dosi pratiche; volume, nicotina e aroma richiesti restano invariati. Totale preparato: '+roundedVolume+' ml.';
+ }catch(e){hint.textContent='Completa una miscela valida per confrontare le dosi con VG o PG interi.';}
+}
+for(const [id,index] of [['apply-vg',0],['apply-pg',1]])$(id).addEventListener('click',()=>{const option=compositionOptions[index];if(!option)return;rememberValues('composition');practicalDoses={...option};delete preciseValues.vg;delete preciseValues.pg;$('vg').value=display(option.ratioVG);$('pg').value=display(option.ratioPG);formatInputs();updateCompositionHint();calculate();});
+for(const id of ['volume','target','vg','pg','aroma','base','strength'])$(id).addEventListener(['base','strength'].includes(id)?'change':'input',updateCompositionHint);
+updateCompositionHint();
+
+
+$('apply-volume').addEventListener('click',()=>{const a=field('aroma');if(!Number.isFinite(a)||a<=0||a>100)return;rememberValues('volume');practicalDoses=null;$('volume').value=display(Number($('aroma-size').value)*100/a);refreshAll();});
+$('apply-nicotine').addEventListener('click',()=>{const v=field('volume'),t=field('target'),s=field('strength');if($('volume').value===''||$('target').value===''||!Number.isFinite(v)||!Number.isFinite(t)||v<=0||t<0||t>s)return;const n=s===0?0:Math.min(Math.round(v*t/s/10),Math.floor((v+1e-9)/10));rememberValues('nicotine');practicalDoses=null;$('target').value=display(n*10*s/v);refreshAll();});
+
+for(const group of ['volume','nicotine','composition','aroma'])$('restore-'+group).addEventListener('click',()=>{const prior=restoreHistory[group].pop();if(!prior)return;if(group==='composition'){practicalDoses=prior.practicalDoses;for(const k of ['vg','pg']){$(k).value=prior[k].shown;preciseValues[k]=prior[k];}}else{practicalDoses=null;for(const [key,value]of Object.entries(prior)){$(key).value=value.shown;preciseValues[key]=value;}}$('restore-'+group).disabled=restoreHistory[group].length===0;refreshAll();});
+$('reset').addEventListener('click',()=>{for(const k of Object.keys(preciseValues))delete preciseValues[k];practicalDoses=null;for(const group of ['volume','nicotine','composition','aroma']){restoreHistory[group].length=0;$('restore-'+group).disabled=true;}for(const k of ['volume','target','vg','pg','aroma'])$(k).value='';$('base').value='50';$('strength').value='20';$('aroma-size').value='10';$('dose-precision').value='0';$('precision-caption').textContent='Dosi arrotondate a 1 ml. Il totale è la somma delle dosi.';$('error').hidden=true;clearResults();updateAromaHint();updateAromaVolume();updateNicotineHint();updateCompositionHint();$('volume').focus()});
+
+function updateAromaHint(){
+ const shot=$('aroma-size').value==='20';
+ $('apply-aroma').disabled=!shot;
+ $('aroma-hint').textContent=shot?'Per lo shot puoi partire da: 33,333…%. Applica la percentuale con la precisione necessaria; puoi modificarla liberamente.':'Usa la diluizione indicata per il tuo aroma. Lo zero prepara una miscela senza aroma.';
+}
+$('apply-aroma').addEventListener('click',()=>{if($('aroma-size').value!=='20')return;rememberValues('aroma');practicalDoses=null;$('aroma').value=display(100/3);refreshAll();});
+for(const id of ['volume','target','vg','pg','aroma']){
+ const input=$(id);
+ input.addEventListener('blur',()=>{formatInput(id);updateAromaVolume();updateNicotineHint();updateCompositionHint();});
+ input.addEventListener('input',()=>{practicalDoses=null;restoreHistory.composition.length=0;$('restore-composition').disabled=true;const pos=input.selectionStart;if(input.value.includes('.')){input.value=input.value.replaceAll('.',',');if(pos!==null&&input.setSelectionRange)input.setSelectionRange(pos,pos);}updateAromaVolume();updateNicotineHint();updateCompositionHint();});
+}
+for(const id of ['base','strength'])$(id).addEventListener('change',()=>{practicalDoses=null;restoreHistory.composition.length=0;$('restore-composition').disabled=true;clearResults();});
+updateAromaHint();
+</script></body></html>
