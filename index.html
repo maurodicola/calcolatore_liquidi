@@ -56,10 +56,30 @@ const f=10**d,totalU=units(v,f),nicU=s===0?0:units(v*t/s,f),aromaU=units(v*a/100
 if(totalU<=0)throw Error('Il volume è troppo piccolo per la precisione scelta.');
 const vgIdealU=totalU*g/100-nicU*b/100;
 if(restU<0)throw Error('Ricetta impossibile: basette e aroma ('+pretty((nicU+aromaU)/f)+' ml) superano il volume della miscela. Aumenta il volume o riduci nicotina e aroma.');
-if(vgIdealU< -0.5||vgIdealU>restU+0.5){const range=u=>pretty(100*(u+nicU*b/100)/totalU);throw Error('Ricetta impossibile con questi parametri: le basette e l’aroma apportano più '+(vgIdealU< -0.5?'VG':'PG')+' di quanto previsto. Con questi ingredienti la composizione può andare da '+range(0)+'% a '+range(restU)+'% VG. Modifica composizione finale, aroma, nicotina o tipo di basette.');}
+if(vgIdealU< -0.5||vgIdealU>restU+0.5)throw Error(impossibleMessage(v,t,g,p,a,b,s,totalU,nicU,aromaU,vgIdealU< -0.5));
 const vgU=Math.min(restU,Math.max(0,units(vgIdealU,1)));
 const ratio=u=>100*(u+nicU*b/100)/totalU;
 return {v,t,g,p,a,b,s,d,f,totalU,nicU,aromaU,restU,vgU,pgU:restU-vgU,vgIdealU,ratio};
+}
+// Spiega perché la composizione richiesta non è raggiungibile e cosa cambiare per ottenerla.
+function impossibleMessage(v,t,g,p,a,b,s,totalU,nicU,aromaU,tooMuchVG){
+ const pct=u=>pretty(100*u/totalU),floor2=x=>Math.floor(x*100+1e-9)/100,n=s===0?0:v*t/s,tips=[];
+ let message;
+ if(tooMuchVG){
+  const vgU=nicU*b/100;
+  message='Ricetta impossibile: le basette apportano già il '+pct(vgU)+'% di VG, quindi il VG non può scendere sotto il '+pct(vgU)+'%.';
+  tips.push('imposta almeno '+pct(vgU)+'% VG');
+  const tMax=floor2(s*(v*g/b)/v);if(b>0&&tMax<t)tips.push('scendi a '+pretty(tMax)+' mg/ml di nicotina');
+ }else{
+  const pgU=nicU*(1-b/100)+aromaU;
+  message='Ricetta impossibile: basette e aroma apportano già il '+pct(pgU)+'% di PG, quindi il VG non può superare il '+pretty(100-100*pgU/totalU)+'%.';
+  tips.push('imposta al massimo '+pretty(100-100*pgU/totalU)+'% VG');
+  if(b<100){const tMax=floor2(s*((v*p/100-v*a/100)/(1-b/100))/v);if(tMax>0&&tMax<t)tips.push('scendi a '+pretty(tMax)+' mg/ml di nicotina');}
+  const aMax=floor2(p-100*n*(1-b/100)/v);if(aMax>0&&aMax<a)tips.push('riduci l’aroma al '+pretty(aMax)+'%');
+ }
+ const bases=[...$('base').options].map(o=>Number(o.value)).filter(x=>x!==b&&totalU*g/100-nicU*x/100>=-0.5&&totalU*g/100-nicU*x/100<=totalU-nicU-aromaU+0.5).map(baseLabel);
+ if(bases.length)tips.push('usa basette '+(bases.length>1?bases.slice(0,-1).join(', ')+' o '+bases.at(-1):bases[0]));
+ return message+' Per risolvere: '+tips.join('; oppure ')+'.';
 }
 function clearResults(){$('effective').hidden=true;$('effective').textContent='';for(const k of ['vg','pg','nic','aroma']){$('out-'+k).textContent='—';$('bar-'+k).style.width='0%'}$('out-total').textContent='—';$('base-note').textContent='Le dosi delle basette appariranno dopo il calcolo.';$('precision-caption').textContent='Dosi arrotondate a '+precisionLabel(digits())+'. Il totale è la somma delle dosi.';}
 function calculate(){try{
@@ -141,13 +161,14 @@ for(const id of ['volume','target','vg','pg','aroma']){
  input.addEventListener('blur',()=>{formatInput(id);refresh();});
 }
 for(const id of ['base','strength','dose-precision'])$(id).addEventListener('change',refresh);
-// Volume e diluizione dipendono dal formato dell'aroma: cambiando formato si ripartono da zero.
-$('aroma-size').addEventListener('change',()=>{for(const k of ['volume','aroma']){$(k).value='';delete preciseValues[k];restoreHistory[k].length=0;$('restore-'+k).disabled=true;}refresh();$('aroma').focus();});
 for(const [id,index] of [['apply-vg',0],['apply-pg',1]])$(id).addEventListener('click',()=>{const option=compositionOptions[index];if(!option)return;rememberValues('composition');delete preciseValues.vg;delete preciseValues.pg;$('vg').value=display(option.ratio);$('pg').value=display(100-option.ratio);refreshAll();});
 $('apply-volume').addEventListener('click',()=>{const a=field('aroma');if(!Number.isFinite(a)||a<=0||a>100)return;rememberValues('volume');$('volume').value=display(Number($('aroma-size').value)*100/a);refreshAll();});
 $('apply-nicotine').addEventListener('click',()=>{const v=field('volume'),t=field('target'),s=field('strength');if($('volume').value===''||$('target').value===''||!Number.isFinite(v)||!Number.isFinite(t)||v<=0||t<0||t>s)return;const n=s===0?0:wholeBottles(v,t,s);rememberValues('nicotine');$('target').value=display(n*10*s/v);refreshAll();});
 $('apply-aroma').addEventListener('click',()=>{if($('aroma-size').value!=='20')return;rememberValues('aroma');$('aroma').value=display(100/3);refreshAll();});
 for(const group of ['volume','nicotine','composition','aroma'])$('restore-'+group).addEventListener('click',()=>{const prior=restoreHistory[group].pop();if(!prior)return;for(const [key,value] of Object.entries(prior)){$(key).value=value.shown;preciseValues[key]=value;}$('restore-'+group).disabled=restoreHistory[group].length===0;refreshAll();});
-$('reset').addEventListener('click',()=>{for(const k of Object.keys(preciseValues))delete preciseValues[k];for(const group of ['volume','nicotine','composition','aroma']){restoreHistory[group].length=0;$('restore-'+group).disabled=true;}for(const k of ['volume','target','vg','pg','aroma'])$(k).value='';$('base').value='50';$('strength').value='20';$('aroma-size').value='10';$('dose-precision').value='1';refresh();$('volume').focus()});
+// Nuova miscela: tutti i campi tornano ai valori iniziali; il formato dell'aroma si può conservare.
+function resetAll(format='10'){for(const k of Object.keys(preciseValues))delete preciseValues[k];for(const group of ['volume','nicotine','composition','aroma']){restoreHistory[group].length=0;$('restore-'+group).disabled=true;}for(const k of ['volume','target','vg','pg','aroma'])$(k).value='';$('base').value='50';$('strength').value='20';$('aroma-size').value=format;$('dose-precision').value='1';refresh();$('volume').focus();}
+$('reset').addEventListener('click',()=>resetAll());
+$('aroma-size').addEventListener('change',()=>resetAll($('aroma-size').value));
 refresh();
 </script></body></html>
