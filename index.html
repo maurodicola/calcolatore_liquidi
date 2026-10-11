@@ -22,7 +22,7 @@
 /* Crediti e versione nell'intestazione, sempre visibili senza scorrere. */
 .masthead-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px}.masthead .footer{margin:0;text-align:right}
 @media(max-width:760px){.masthead{flex-direction:column;align-items:flex-start;gap:12px}.masthead-side{align-items:flex-start}.masthead .footer{text-align:left}}.volume-feedback p{margin:0}.volume-feedback .effective-title{font-weight:650;color:#fff;margin-bottom:4px}.volume-feedback .warn{color:#ffa7b0}
-</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><div class="masthead-side"><span class="offline">Un file. Sempre a portata di mano.</span><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione · <span id="version">Versione 2.6 · 11/10/2026 · 18:18</span></footer></div></header><main class="layout"><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
+</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><div class="masthead-side"><span class="offline">Un file. Sempre a portata di mano.</span><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione · <span id="version">Versione 2.7 · 11/10/2026 · 18:42</span></footer></div></header><main class="layout"><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
 <form id="form" novalidate>
 <div class="row"><div class="volume-question"><label for="volume">Definisci il <span class="accent">volume</span> della miscela</label><p class="note volume-note" id="aroma-volume-note" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-volume">Applica</button><button type="button" id="restore-volume" disabled>Ripristina</button></div></div><div class="controls"><input id="volume" type="text" inputmode="decimal" min="0.01" step="any" value="" required><span class="unit">ml</span></div></div>
 <div class="row"><div class="volume-question"><label for="target">Scegli la <span class="accent">nicotina</span> finale</label><p class="note volume-note" id="nicotine-hint" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-nicotine">Applica</button><button type="button" id="restore-nicotine" disabled>Ripristina</button></div></div><div class="controls"><input id="target" type="text" inputmode="decimal" min="0" step="any" value="" required><span class="unit">mg/ml</span></div></div>
@@ -69,8 +69,8 @@ const units=(x,f)=>Math.round(Number((x*f).toPrecision(12)));
 // nel modo più vicino alla composizione richiesta, tenendo conto delle basette realmente dosate.
 // Margine accettato sulla dose di VG (in unità di precisione): mezza dose, o di più se serve perché
 // ogni percentuale ottenibile, scritta a due decimali, sia accettata.
-// Scarto di composizione (in punti percentuali) che nella pratica non conta: sotto questa soglia non si propongono alternative.
-const NEGLIGIBLE=0.05;
+// Scarto di composizione e di aroma (in punti percentuali) che nella pratica non conta: sotto questa soglia non si propongono alternative.
+const NEGLIGIBLE=0.1;
 const tolerance=totalU=>Math.max(0.5,totalU/20000+1e-9);
 function recipe(v,t,g,p,a,b,s,d){
 if(![v,t,g,p,a,b,s].every(Number.isFinite))throw Error('Compila tutti i campi con valori numerici validi.');
@@ -126,11 +126,14 @@ function calculate(){try{
 function updateEffective(r){
  const box=$('effective'),total=r.totalU/r.f,nic=r.nicU*r.s/r.totalU,vg=r.ratio(r.vgU),aroma=100*r.aromaU/r.totalU;
  const same=(x,y)=>Math.abs(x-y)<0.005;
+ // Ogni riga: uguale → «come richiesto»; scarto trascurabile → valore effettivo senza evidenza; scarto reale → evidenziato.
+ const line=(ok,okText,text,small)=>ok?[okText]:[text+(small?', differenza trascurabile':'')+').',!small];
+ const nicSmall=Math.abs(nic-r.t)<0.05,vgSmall=Math.abs(vg-r.g)<NEGLIGIBLE,aromaSmall=Math.abs(aroma-r.a)<NEGLIGIBLE,volumeSmall=Math.abs(total-r.v)<=0.5/r.f+1e-9;
  const lines=[
-  same(nic,r.t)?['Nicotina: '+nice(nic)+' mg/ml, come richiesto.']:['Nicotina effettiva: '+nice(nic)+' mg/ml (richiesta '+nice(r.t)+' mg/ml'+(r.t>0?', '+(nic>r.t?'+':'')+nice(100*(nic-r.t)/r.t)+'%':'')+').',true],
-  same(vg,r.g)?['Composizione: '+nice(vg)+'% VG / '+nice(100-vg)+'% PG, come richiesto.']:['Composizione effettiva: '+nice(vg)+'% VG / '+nice(100-vg)+'% PG (richiesta '+nice(r.g)+'% / '+nice(r.p)+'%'+(Math.abs(vg-r.g)<NEGLIGIBLE?', differenza trascurabile).':').'),Math.abs(vg-r.g)>=NEGLIGIBLE],
-  same(aroma,r.a)?['Aroma: '+nice(aroma)+'%, come richiesto.']:['Aroma effettivo: '+nice(aroma)+'% (richiesto '+nice(r.a)+'%).',true],
-  same(total,r.v)?['Volume: '+nice(total)+' ml, come richiesto.']:['Volume effettivo: '+nice(total)+' ml (richiesti '+nice(r.v)+' ml).',true]];
+  line(same(nic,r.t),'Nicotina: '+nice(nic)+' mg/ml, come richiesto.','Nicotina effettiva: '+nice(nic)+' mg/ml (richiesta '+nice(r.t)+' mg/ml'+(r.t>0&&!nicSmall?', '+(nic>r.t?'+':'')+nice(100*(nic-r.t)/r.t)+'%':''),nicSmall),
+  line(same(vg,r.g),'Composizione: '+nice(vg)+'% VG / '+nice(100-vg)+'% PG, come richiesto.','Composizione effettiva: '+nice(vg)+'% VG / '+nice(100-vg)+'% PG (richiesta '+nice(r.g)+'% / '+nice(r.p)+'%',vgSmall),
+  line(same(aroma,r.a),'Aroma: '+nice(aroma)+'%, come richiesto.','Aroma effettivo: '+nice(aroma)+'% (richiesto '+nice(r.a)+'%',aromaSmall),
+  line(same(total,r.v),'Volume: '+nice(total)+' ml, come richiesto.','Volume effettivo: '+nice(total)+' ml (richiesti '+nice(r.v)+' ml',volumeSmall)];
  if(r.d<2&&lines.some(l=>l[1]))lines.push(['Per avvicinarti ai valori richiesti, seleziona '+(r.d===0?'0,1 ml o 0,01 ml':'0,01 ml')+' in «Precisione delle dosi».']);
  box.textContent='';
  const title=document.createElement('p');title.className='effective-title';title.textContent='Cosa ottieni con queste dosi';box.append(title);
