@@ -82,11 +82,12 @@ Per usarlo:
 
 ```text
 /
-├── index.html
-├── README.md
-├── LICENSE
+├── .gitignore
 ├── LEGAL.md
-└── .gitignore
+├── LICENSE
+├── LICENZA.md
+├── README.md
+└── index.html
 ```
 
 ## ▶️ Come usare
@@ -141,4 +142,5 @@ Se decidi di renderlo pubblico:
 Mauro Di Cola
 
 ## Ultimo aggiornamento
+Versione 2.7 · 11/10/2026 · 18:42
 Questo file va aggiornato periodicamente con data e note legali eventuali.
