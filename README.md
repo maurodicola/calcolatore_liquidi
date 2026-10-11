@@ -82,7 +82,7 @@ Per usarlo:
 
 ```text
 /
-├── Calcolatore_liquidi_7.0_Claude_Code_GitHub_2.7.html
+├── index.html
 ├── README.md
 ├── LICENSE
 ├── LEGAL.md
