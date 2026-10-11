@@ -13,7 +13,7 @@
 /* Crediti e versione nell'intestazione, sempre visibili senza scorrere. */
 .masthead-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px}.masthead .footer{margin:0;text-align:right}
 @media(max-width:760px){.masthead{flex-direction:column;align-items:flex-start;gap:12px}.masthead-side{align-items:flex-start}.masthead .footer{text-align:left}}.volume-feedback p{margin:0}.volume-feedback .effective-title{font-weight:650;color:#fff;margin-bottom:4px}.volume-feedback .warn{color:#ffa7b0}
-</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><div class="masthead-side"><span class="offline">Un file. Sempre a portata di mano.</span><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione · <span id="version">Versione 1.6 · 11/10/2026</span></footer></div></header><main class="layout"><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
+</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><div class="masthead-side"><span class="offline">Un file. Sempre a portata di mano.</span><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione · <span id="version">Versione 1.7 · 11/10/2026</span></footer></div></header><main class="layout"><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
 <form id="form" novalidate>
 <div class="row"><div class="volume-question"><label for="volume">Definisci il <span class="accent">volume</span> della miscela</label><p class="note volume-note" id="aroma-volume-note" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-volume">Applica</button><button type="button" id="restore-volume" disabled>Ripristina</button></div></div><div class="controls"><input id="volume" type="text" inputmode="decimal" min="0.01" step="any" value="" required><span class="unit">ml</span></div></div>
 <div class="row"><div class="volume-question"><label for="target">Scegli la <span class="accent">nicotina</span> finale</label><p class="note volume-note" id="nicotine-hint" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-nicotine">Applica</button><button type="button" id="restore-nicotine" disabled>Ripristina</button></div></div><div class="controls"><input id="target" type="text" inputmode="decimal" min="0" step="any" value="" required><span class="unit">mg/ml</span></div></div>
@@ -51,6 +51,8 @@ const units=(x,f)=>Math.round(Number((x*f).toPrecision(12)));
 // nel modo più vicino alla composizione richiesta, tenendo conto delle basette realmente dosate.
 // Margine accettato sulla dose di VG (in unità di precisione): mezza dose, o di più se serve perché
 // ogni percentuale ottenibile, scritta a due decimali, sia accettata.
+// Scarto di composizione (in punti percentuali) che nella pratica non conta: sotto questa soglia non si propongono alternative.
+const NEGLIGIBLE=0.05;
 const tolerance=totalU=>Math.max(0.5,totalU/20000+1e-9);
 function recipe(v,t,g,p,a,b,s,d){
 if(![v,t,g,p,a,b,s].every(Number.isFinite))throw Error('Compila tutti i campi con valori numerici validi.');
@@ -107,7 +109,7 @@ function updateEffective(r){
  const same=(x,y)=>Math.abs(x-y)<0.005;
  const lines=[
   same(nic,r.t)?['Nicotina: '+pretty(nic)+' mg/ml, come richiesto.']:['Nicotina effettiva: '+pretty(nic)+' mg/ml (richiesta '+pretty(r.t)+' mg/ml'+(r.t>0?', '+(nic>r.t?'+':'')+pretty(100*(nic-r.t)/r.t,1)+'%':'')+').',true],
-  same(vg,r.g)?['Composizione: '+pretty(vg)+'% VG / '+pretty(100-vg)+'% PG, come richiesto.']:['Composizione effettiva: '+pretty(vg)+'% VG / '+pretty(100-vg)+'% PG (richiesta '+pretty(r.g)+'% / '+pretty(r.p)+'%).',true],
+  same(vg,r.g)?['Composizione: '+pretty(vg)+'% VG / '+pretty(100-vg)+'% PG, come richiesto.']:['Composizione effettiva: '+pretty(vg)+'% VG / '+pretty(100-vg)+'% PG (richiesta '+pretty(r.g)+'% / '+pretty(r.p)+'%'+(Math.abs(vg-r.g)<NEGLIGIBLE?', differenza trascurabile).':').'),Math.abs(vg-r.g)>=NEGLIGIBLE],
   same(aroma,r.a)?['Aroma: '+pretty(aroma)+'%, come richiesto.']:['Aroma effettivo: '+pretty(aroma)+'% (richiesto '+pretty(r.a)+'%).',true],
   same(total,r.v)?['Volume: '+pretty(total)+' ml, come richiesto.']:['Volume effettivo: '+pretty(total)+' ml (richiesti '+pretty(r.v)+' ml).',true]];
  if(r.d<2&&lines.some(l=>l[1]))lines.push(['Per avvicinarti ai valori richiesti, seleziona '+(r.d===0?'0,1 ml o 0,01 ml':'0,01 ml')+' in «Precisione delle dosi».']);
@@ -151,6 +153,7 @@ function updateCompositionHint(){
  // La composizione è esatta quando coincide con quella richiesta a due decimali, come mostrata nei campi.
  const sameRatio=u=>Math.abs(r.ratio(u)-r.g)<0.005;
  if(sameRatio(r.vgU)){hint.textContent='Con dosi da '+label+' la composizione richiesta è esatta: '+describe(r.vgU)+'.';return;}
+ if(Math.abs(r.ratio(r.vgU)-r.g)<NEGLIGIBLE){hint.textContent='Con dosi da '+label+' la composizione è praticamente quella richiesta: '+describe(r.vgU)+'.';return;}
  const clamp=u=>Math.min(r.restU,Math.max(0,u));
  for(const u of new Set([clamp(Math.ceil(r.vgIdealU)),clamp(Math.floor(r.vgIdealU))]))if(!sameRatio(u))compositionOptions[r.ratio(u)>r.g?0:1]={vg:u,ratio:r.ratio(u)};
  // Se una delle due proposte è 50/50, entrambe propongono il 50/50.
