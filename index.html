@@ -10,6 +10,15 @@
 @media(max-width:1100px){#form>.row:nth-child(5){grid-column:1;grid-row:auto}#form>.error{grid-column:1;grid-row:auto;order:6}#form>.identity{grid-column:1;grid-row:auto;order:7}#form>.actions{grid-column:1;grid-row:auto;order:8}}
 .dose-precision{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.dose-precision label{font-size:12px;color:var(--muted)}.dose-precision select{font-size:13px;height:36px}.actions{flex-wrap:wrap}.precision-caption{font-size:11px;color:#c1d1ca;line-height:1.5;margin:10px 0 0}
 .volume-feedback{margin:14px 0 0;padding:12px;background:#ffffff0c;border-radius:8px;font-size:12px;line-height:1.6;color:#f0e6bc}.volume-feedback[hidden]{display:none}
+/* «Informazioni e note legali»: finestra sopra la pagina, apribile dal link in alto o con l’indirizzo #informazioni. */
+.masthead-links{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end}.info-link{font-size:13px;font-weight:650;color:var(--teal);text-decoration:underline;text-underline-offset:3px}.info-link:hover{color:var(--red)}
+.info{width:min(760px,calc(100vw - 32px));max-height:calc(100vh - 48px);padding:0;border:0;border-radius:16px;background:#fffefa;color:var(--ink);box-shadow:0 20px 60px #203b3b40}.info::backdrop{background:#203b3b99}
+.info-head{position:sticky;top:0;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:22px 26px 14px;background:#fffefa;border-bottom:1px solid var(--line)}.info-head h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:28px;margin:0}.info-head .eyebrow{margin-bottom:4px}
+.info-close{font:inherit;font-size:18px;line-height:1;width:38px;height:38px;border:0;border-radius:50%;background:#e7efea;color:var(--teal);cursor:pointer;flex-shrink:0}.info-close:hover{background:#d8e5dd}
+.info-body{padding:6px 26px 26px;font-size:15px;line-height:1.6}.info-body h3{font-size:16px;color:var(--teal);margin:20px 0 6px}.info-body p{margin:0 0 8px}.info-body ul{margin:0 0 8px;padding-left:20px}.info-body li{margin:3px 0}
+.info-body h4{font-size:15px;margin:16px 0 4px}.info-body h5{font-size:14px;color:var(--muted);margin:12px 0 4px}.info-body ol{margin:0 0 8px;padding-left:22px}.info-body hr{border:0;border-top:1px solid var(--line);margin:18px 0}.info-body .legal{margin-top:8px;padding-top:4px;border-top:1px solid var(--line)}.info-body .legal-title{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:22px;color:var(--ink);margin-top:18px}.info-body code{font-size:13px;background:#f0f4ef;padding:1px 5px;border-radius:4px}
+.info-license{white-space:pre-wrap;font-size:11.5px;line-height:1.5;background:#f0f4ef;border-radius:8px;padding:12px 14px;overflow-x:auto}
+@media(max-width:760px){.masthead-links{justify-content:flex-start}.info-head{padding:18px 18px 12px}.info-head h2{font-size:23px}.info-body{padding:4px 18px 20px}}
 .identity-fields{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}.identity-days{flex:0 1 170px!important}.identity-field{display:flex;flex-direction:column;gap:4px;flex:1 1 200px;font-size:12px;color:var(--muted)}.identity-field input{width:100%;text-align:left;font-size:16px}.suggest-wrap{position:relative}
 /* Tendina dei suggerimenti: prima ciò che inizia con il testo digitato, poi ciò che lo contiene. */
 .suggest{position:absolute;left:0;right:0;top:100%;margin:4px 0 0;padding:4px;list-style:none;background:#fffefa;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 24px #203b3b1f;z-index:20;max-height:280px;overflow:auto}.suggest[hidden]{display:none}.suggest li{padding:7px 10px;border-radius:6px;font-size:15px;color:var(--ink);cursor:pointer}.suggest li b{font-weight:700;color:var(--teal)}.suggest li.active,.suggest li:hover{background:#e7efea}.suggest li.sep{font-size:11px;font-weight:650;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);padding:8px 10px 3px;cursor:default;pointer-events:none;border-top:1px solid var(--line);margin-top:4px;border-radius:0}.identity .note{min-height:1.5em}
@@ -24,7 +33,7 @@
 /* Crediti e versione nell'intestazione, sempre visibili senza scorrere. */
 .masthead-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px}.masthead .footer{margin:0;text-align:right}
 @media(max-width:760px){.masthead{flex-direction:column;align-items:flex-start;gap:12px}.masthead-side{align-items:flex-start}.masthead .footer{text-align:left}}.volume-feedback p{margin:0}.volume-feedback .effective-title{font-weight:650;color:#fff;margin-bottom:4px}.volume-feedback .warn{color:#ffa7b0}
-</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><div class="masthead-side"><span class="offline">Un file. Sempre a portata di mano.</span><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione · <span id="version">Versione 3.2 · 12/10/2026 · 12:11</span></footer></div></header><main class="layout"><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
+</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><div class="masthead-side"><div class="masthead-links"><a class="info-link" id="info-link" href="#informazioni">Informazioni e note legali</a><span class="offline">Un file. Sempre a portata di mano.</span></div><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione · <span id="version">Versione 3.4 · 12/10/2026 · 14:36</span></footer></div></header><main class="layout"><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
 <form id="form" novalidate>
 <div class="row"><div class="volume-question"><label for="volume">Definisci il <span class="accent">volume</span> della miscela</label><p class="note volume-note" id="aroma-volume-note" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-volume">Applica</button><button type="button" id="restore-volume" disabled>Ripristina</button></div></div><div class="controls"><input id="volume" type="text" inputmode="decimal" min="0.01" step="any" value="" required><span class="unit">ml</span></div></div>
 <div class="row"><div class="volume-question"><label for="target">Scegli la <span class="accent">nicotina</span> finale</label><p class="note volume-note" id="nicotine-hint" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-nicotine">Applica</button><button type="button" id="restore-nicotine" disabled>Ripristina</button></div></div><div class="controls"><input id="target" type="text" inputmode="decimal" min="0" step="any" value="" required><span class="unit">mg/ml</span></div></div>
@@ -37,6 +46,261 @@
 <div class="ingredient"><div class="ingredient-line"><span class="dot pg"></span><span>Glicole · PG</span><span class="amount" id="out-pg">5.00 ml</span></div></div>
 <div class="ingredient"><div class="ingredient-line"><span class="dot nic"></span><span>Basette</span><span class="amount" id="out-nic">20.00 ml</span></div><p class="note" id="base-note">Basette 50/50 a 20 mg/ml, da utilizzare: 20.00 ml (2.00 flaconi da 10 ml)</p></div>
 <div class="ingredient"><div class="ingredient-line"><span class="dot aroma"></span><span>Aroma</span><span class="amount" id="out-aroma">10.00 ml</span></div></div><div class="total"><span>Volume complessivo</span><strong id="out-total">50.00 ml</strong></div><div class="volume-feedback" id="effective" hidden></div></div><p class="assumption">Aroma considerato in PG. Composizioni indicate nell’ordine VG/PG; flaconi di basetta da 10 ml. Le cifre tra parentesi si ripetono all’infinito: 6,(6) = 6,666…</p></section></main><section class="recipes" aria-labelledby="recipes-title"><div class="recipes-top"><div><p class="eyebrow" id="recipes-title">03 / Le tue ricette</p><p class="intro">Le ricette salvate restano in questo browser. Esportale per portarle su un altro dispositivo o condividerle.</p></div><div class="recipes-tools"><span class="recipes-count" id="recipes-count"></span><button class="print-button" id="export-json" type="button" disabled>Esporta JSON</button><button class="print-button" id="export-csv" type="button" disabled>Esporta CSV</button><button class="print-button" id="import-recipes" type="button">Importa</button><input id="import-file" type="file" accept=".json,application/json" hidden></div></div><p class="note recipes-status" id="recipes-status" aria-live="polite"></p><p class="export-notice" id="export-notice" role="status" hidden></p><div class="recipes-table"><table><colgroup><col class="c-name"><col class="c-signature"><col class="c-format"><col class="c-mix"><col class="c-base"><col class="c-doses"><col class="c-maturation"><col class="c-date"><col class="c-actions"></colgroup><thead id="recipes-head"></thead><tbody id="recipes-body"></tbody></table><p class="recipes-empty" id="recipes-empty"></p></div></section>
+<dialog class="info" id="info" aria-labelledby="info-title"><div class="info-head"><div><p class="eyebrow">Atelier Liquidi</p><h2 id="info-title">Informazioni e note legali</h2></div><button class="info-close" id="info-close" type="button" aria-label="Chiudi">✕</button></div>
+<div class="info-body">
+<section><h3>Che cos’è</h3><p>Atelier Liquidi è un calcolatore personale ed educativo per chi prepara da sé i propri liquidi per sigaretta elettronica: calcola le dosi di glicerolo (VG), glicole (PG), basette e aroma a partire da volume, nicotina, composizione e diluizione desiderati, conserva le ricette nel browser e stampa le etichette per i flaconi.</p><p>È distribuito gratuitamente, senza pubblicità e senza fini commerciali. Non vende, non promuove e non pubblicizza prodotti.</p></section>
+<section class="legal"><!-- Testo di LEGAL.md riportato tale e quale. -->
+<h3 class="legal-title">Informazioni Legali e Normative</h3>
+<p>Questo documento fornisce informazioni legali e normative riguardanti la preparazione di liquidi per sigarette elettroniche. Non sostituisce la consulenza legale professionale.</p>
+<h3>🇮🇹 Normativa Italiana</h3>
+<h4>Situazione attuale</h4>
+<p>La preparazione di liquidi per sigarette elettroniche per <strong>uso personale</strong> rientra in una zona grigia normativa:</p>
+<ul>
+<li><strong>Non esplicitamente vietata</strong> per uso personale</li>
+<li><strong>Non ufficialmente regolamentata</strong> come attività privata</li>
+<li><strong>Tollerata</strong> in comunità private e tra appassionati</li>
+<li><strong>Vietata</strong> per commercializzazione senza autorizzazioni</li>
+</ul>
+<h4>Normative di riferimento</h4>
+<h5>Decreto Legislativo 219/2017</h5>
+<ul>
+<li>Regola la commercializzazione di prodotti del tabacco e relativi prodotti</li>
+<li>Include i liquidi per sigarette elettroniche</li>
+<li>Vieta la vendita di liquidi con nicotina senza licenza farmaceutica</li>
+<li><strong>Non regola</strong> la preparazione per uso personale</li>
+</ul>
+<h5>Decreto del Ministero della Salute</h5>
+<ul>
+<li>Definisce i requisiti di purezza e sicurezza per la nicotina</li>
+<li>Applicabile ai produttori commerciali</li>
+<li>Non applicabile a preparazioni personali</li>
+</ul>
+<h5>Codice del Consumo</h5>
+<ul>
+<li>Tutela il consumatore da prodotti pericolosi</li>
+<li>Non vieta la preparazione personale</li>
+</ul>
+<h4>Cosa è legale in Italia</h4>
+<p>✅ <strong>Legale:</strong></p>
+<ul>
+<li>Possedere e usare sigarette elettroniche</li>
+<li>Acquistare liquidi pronti (con nicotina, entro concentrazioni legali)</li>
+<li>Preparare liquidi per uso personale (zona grigia, tollerata)</li>
+<li>Condividere ricette e calcolatori tra amici e comunità</li>
+</ul>
+<p>❌ <strong>Illegale:</strong></p>
+<ul>
+<li>Vendere liquidi preparati DIY senza licenza farmaceutica</li>
+<li>Distribuire commercialmente liquidi con nicotina non autorizzati</li>
+<li>Fare affermazioni mediche su benefici della nicotina o del vaping</li>
+<li>Vendere a minori</li>
+</ul>
+<h4>Concentrazione massima di nicotina</h4>
+<p>In Italia, i liquidi commerciali con nicotina hanno concentrazioni massime regolamentate:</p>
+<ul>
+<li>Limite massimo: <strong>20 mg/ml</strong> (in alcuni casi fino a 50 mg/ml per "nicotine salts")</li>
+<li>Questo vale per i prodotti commerciali</li>
+<li>Per uso personale, non esiste un limite ufficiale, ma si consiglia di stare entro questi range</li>
+</ul>
+<h3>🌍 Normativa per altre giurisdizioni</h3>
+<h4>🇬🇧 Regno Unito</h4>
+<ul>
+<li>✅ <strong>Legale</strong> per uso personale</li>
+<li>✅ <strong>Regolamentato</strong> e ufficialmente riconosciuto</li>
+<li>Concentrazione massima: <strong>20 mg/ml</strong></li>
+<li>La preparazione DIY è legale e tollerata</li>
+</ul>
+<h4>🇫🇷 Francia</h4>
+<ul>
+<li>✅ <strong>Legale</strong> per uso personale</li>
+<li>⚠️ Limitazioni sulla nicotina</li>
+<li>Concentrazione massima: <strong>20 mg/ml</strong></li>
+<li>La vendita di componenti per DIY è legale</li>
+</ul>
+<h4>🇩🇪 Germania</h4>
+<ul>
+<li>✅ <strong>Legale</strong> per uso personale</li>
+<li>✅ <strong>Tollerata</strong> la preparazione DIY</li>
+<li>Nessun limite ufficiale di concentrazione</li>
+<li>La nicotina deve essere di qualità farmaceutica</li>
+</ul>
+<h4>🇪🇸 Spagna</h4>
+<ul>
+<li>✅ <strong>Legale</strong> per uso personale</li>
+<li>⚠️ Regolamentazione in evoluzione</li>
+<li>Limitazioni sulla commercializzazione</li>
+<li>DIY tollerato in comunità</li>
+</ul>
+<h4>🇸🇪 Svezia</h4>
+<ul>
+<li>✅ <strong>Legale</strong> per uso personale</li>
+<li>Snus (nicotina orale) è parte della cultura locale</li>
+<li>E-liquid con nicotina è legale</li>
+</ul>
+<h4>🇦🇺 Australia</h4>
+<ul>
+<li>❌ <strong>Illegale</strong> per la maggior parte</li>
+<li>Nicotina senza prescrizione medica è vietata</li>
+<li>Alcune eccezioni per uso medico</li>
+</ul>
+<h4>🇺🇸 USA (Stati Uniti)</h4>
+<ul>
+<li>✅ <strong>Legale</strong> per uso personale (a livello federale)</li>
+<li>⚠️ Regolamentazione molto frammentata per stato</li>
+<li>Alcuni stati hanno restrizioni più severe</li>
+<li>FDA regola i prodotti commerciali</li>
+</ul>
+<h4>🇨🇦 Canada</h4>
+<ul>
+<li>✅ <strong>Legale</strong> per uso personale</li>
+<li>⚠️ Regolamentazione in evoluzione</li>
+<li>Nicotina deve essere di qualità farmaceutica</li>
+<li>Concentrazione massima: <strong>20 mg/ml</strong></li>
+</ul>
+<h3>⚖️ Responsabilità legale</h3>
+<h4>Limitazioni di responsabilità di questo strumento</h4>
+<p>L'autore di questo calcolatore:</p>
+<ul>
+<li>NON garantisce l'accuratezza dei calcoli in condizioni reali</li>
+<li>NON è responsabile per errori nell'utilizzo dello strumento</li>
+<li>NON è responsabile per violazioni di leggi locali</li>
+<li>NON è responsabile per danni derivanti dalla manipolazione di nicotina</li>
+<li>NON è responsabile per problemi di salute legati al vaping</li>
+<li>NON è responsabile per l'uso commerciale del calcolatore</li>
+<li>NON è responsabile per la qualità degli ingredienti utilizzati</li>
+</ul>
+<h4>Assunzione di responsabilità dell'utente</h4>
+<p>Utilizzando questo strumento, l'utente:</p>
+<ul>
+<li><strong>accetta piena responsabilità</strong> delle proprie azioni</li>
+<li><strong>riconosce</strong> i rischi legali e sanitari</li>
+<li><strong>garantisce</strong> di avere l'età legale (≥18 anni)</li>
+<li><strong>garantisce</strong> di usare lo strumento conformemente alle leggi locali</li>
+<li><strong>si impegna</strong> a non usare il calcolatore per scopi commerciali illegali</li>
+<li><strong>riconosce</strong> che il vaping comporta rischi per la salute</li>
+</ul>
+<h3>⚠️ Rischi per la salute</h3>
+<h4>Nicotina</h4>
+<p>La nicotina è una sostanza neurotossica e altamente additiva:</p>
+<ul>
+<li><strong>Tossicità</strong>: Può essere letale anche in piccole dosi se ingerita, inalata o assorbita attraverso la pelle</li>
+<li><strong>Dipendenza</strong>: Crea dipendenza fisica e psicologica</li>
+<li><strong>Effetti neurologici</strong>: Può causare tremori, mal di testa, nausea</li>
+<li><strong>Pressione sanguigna</strong>: Aumenta la pressione sanguigna e la frequenza cardiaca</li>
+<li><strong>Gravidanza</strong>: Controindicata durante la gravidanza e l'allattamento</li>
+</ul>
+<h4>Vaping</h4>
+<p>Il vaping non è privo di rischi:</p>
+<ul>
+<li><strong>Polmoni</strong>: Inalazione regolare può causare infiammazione</li>
+<li><strong>Cuore</strong>: Aumento della frequenza cardiaca e della pressione sanguigna</li>
+<li><strong>Effetti a lungo termine</strong>: Non ancora completamente compresi</li>
+<li><strong>Giovani</strong>: Particolarmente a rischio per effetti sullo sviluppo cerebrale</li>
+</ul>
+<h4>Preparazione DIY</h4>
+<p>Preparare liquidi comporta rischi aggiuntivi:</p>
+<ul>
+<li><strong>Contaminazione</strong>: Mancanza di controlli di qualità</li>
+<li><strong>Dosaggio inesatto</strong>: Variabilità nelle concentrazioni</li>
+<li><strong>Ingredienti</strong>: Qualità e purezza non garantite</li>
+<li><strong>Reazioni allergiche</strong>: Maggior rischio con ingredienti sconosciuti</li>
+</ul>
+<h3>🛡️ Raccomandazioni di sicurezza</h3>
+<h4>Prima di iniziare</h4>
+<ol>
+<li><strong>Verifica le leggi locali</strong> — assicurati che sia legale nel tuo paese/regione</li>
+<li><strong>Valuta i rischi</strong> — comprendi pienamente i rischi sanitari e legali</li>
+<li><strong>Consulta un medico</strong> — se hai dubbi sulla salute</li>
+<li><strong>Acquista ingredienti di qualità</strong> — solo da fornitori affidabili</li>
+</ol>
+<h4>Durante la preparazione</h4>
+<ol>
+<li><strong>Indossa protezioni</strong> — guanti, occhiali, camice</li>
+<li><strong>Lavora in ambienti ben ventilati</strong> — usa una cappa di aspirazione se possibile</li>
+<li><strong>Non mangiare o bere</strong> — durante la manipolazione</li>
+<li><strong>Tieni lontano da bambini e animali</strong> — conserva in luogo sicuro</li>
+<li><strong>Usa strumenti dedicati</strong> — non usare utensili da cucina</li>
+</ol>
+<h4>Conservazione</h4>
+<ol>
+<li><strong>Etichetta chiaramente</strong> — tutti i contenitori</li>
+<li><strong>Conserva al fresco e al buio</strong> — evita il calore diretto</li>
+<li><strong>Chiudi ermeticamente</strong> — previeni l'evaporazione</li>
+<li><strong>Tieni lontano da minori</strong> — in armadietti chiusi a chiave, se necessario</li>
+<li><strong>Documenta la data</strong> — quando è stato preparato</li>
+</ol>
+<h4>Uso</h4>
+<ol>
+<li><strong>Non condividere con minori</strong> — mai, sotto nessuna circostanza</li>
+<li><strong>Non fare affermazioni mediche</strong> — il vaping non è una cura</li>
+<li><strong>Monitora la tua salute</strong> — se noti effetti avversi, smetti e consulta un medico</li>
+<li><strong>Usa solo per te</strong> — non vendere o distribuire senza autorizzazione</li>
+</ol>
+<h3>📋 Dichiarazioni importanti</h3>
+<h4>Questo calcolatore NON</h4>
+<ul>
+<li>Non è un sostituto della consulenza legale o medica</li>
+<li>Non garantisce la conformità alle leggi locali</li>
+<li>Non garantisce la sicurezza degli ingredienti utilizzati</li>
+<li>Non fornisce consulenza su questioni sanitarie</li>
+<li>Non sostiene che il vaping sia sicuro</li>
+<li>Non autorizza l'uso commerciale</li>
+<li>Non è affiliato a nessuna autorità sanitaria o legale</li>
+</ul>
+<h4>Questo calcolatore È</h4>
+<ul>
+<li>Uno strumento educativo e di calcolo</li>
+<li>Disponibile "così com'è", senza garanzie</li>
+<li>Per uso personale esclusivamente</li>
+<li>Per scopi di riferimento e apprendimento</li>
+<li>Fornito gratuitamente senza supporto garantito</li>
+</ul>
+<h3>📞 Contatti e consulenza</h3>
+<p>Se hai domande legali:</p>
+<ul>
+<li><strong>Consulta un avvocato</strong> specializzato in diritto sanitario o commerciale</li>
+<li><strong>Contatta le autorità locali</strong> (Ministero della Salute, Regione, ecc.)</li>
+<li><strong>Verifica le normative locali</strong> — ogni paese/regione è diverso</li>
+</ul>
+<p>Se hai dubbi sulla salute:</p>
+<ul>
+<li><strong>Consulta un medico</strong> prima di usare questo strumento</li>
+<li><strong>Rivolgiti a servizi di disassuefazione</strong> se vuoi smettere</li>
+<li><strong>Chiama il numero verde</strong> della tua regione per informazioni</li>
+</ul>
+<h3>📜 Cronologia delle modifiche</h3>
+<ul>
+<li><strong>11/10/2026</strong> — Versione 1.0, redatto documento legale iniziale</li>
+</ul>
+<hr>
+<p><strong>Ultimo aggiornamento:</strong> 11 Ottobre 2026</p>
+<p><strong>Nota:</strong> Questa pagina non sostituisce la consulenza legale o medica professionale. Le normative cambiano frequentemente. Verifica sempre la legislazione attuale prima di procedere.</p>
+</section>
+<section><h3>Privacy</h3><p>Atelier Liquidi funziona interamente nel tuo browser. Miscele e ricette sono salvate solo nella memoria locale di questo dispositivo: nessun dato viene inviato a server, non ci sono account, cookie di profilazione né sistemi di tracciamento. Esportazione e importazione avvengono solo quando le avvii tu.</p></section>
+<section><h3>Licenza</h3><p>Il codice è distribuito con licenza <strong>MIT</strong>: puoi usarlo, copiarlo, modificarlo e ridistribuirlo, mantenendo l’avviso di copyright e il testo della licenza. Il software è fornito senza alcuna garanzia. Fa fede il testo originale in inglese:</p>
+<pre class="info-license">MIT License
+
+Copyright (c) 2026 Mauro Di Cola
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</pre></section>
+<section><h3>Autore</h3><p>Mauro Di Cola · <span id="info-version"></span></p></section>
+</div></dialog>
 <section class="print-labels" id="print-labels" aria-hidden="true"></section>
 <script>
 'use strict';
@@ -385,5 +649,12 @@ for(const group of ['volume','nicotine','composition','aroma'])$('restore-'+grou
 function resetAll(format='10'){loadedId=null;for(const k of Object.keys(preciseValues))delete preciseValues[k];for(const group of ['volume','nicotine','composition','aroma']){restoreHistory[group].length=0;$('restore-'+group).disabled=true;}for(const k of ['volume','target','vg','pg','aroma','recipe-flavour','recipe-signature','recipe-maturation'])$(k).value='';$('base').value='50';$('strength').value='20';$('aroma-size').value=format;$('dose-precision').value='1';refresh();$('volume').focus();}
 $('reset').addEventListener('click',()=>resetAll());
 $('aroma-size').addEventListener('change',()=>resetAll($('aroma-size').value));
+// Finestra «Informazioni e note legali».
+function openInfo(){$('info-version').textContent=$('version').textContent;if(!$('info').open)$('info').showModal();}
+$('info-link').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'','#informazioni');openInfo();});
+$('info-close').addEventListener('click',()=>$('info').close());
+$('info').addEventListener('click',e=>{if(e.target===$('info'))$('info').close();});
+$('info').addEventListener('close',()=>{if(location.hash==='#informazioni')history.replaceState(null,'',location.pathname+location.search);});
+if(location.hash==='#informazioni')openInfo();
 loadRecipes();loadPending();buildRecipeTable();renderRecipes();loadState();refresh();
 </script></body></html>
