@@ -22,7 +22,7 @@
 /* Crediti e versione nell'intestazione, sempre visibili senza scorrere. */
 .masthead-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px}.masthead .footer{margin:0;text-align:right}
 @media(max-width:760px){.masthead{flex-direction:column;align-items:flex-start;gap:12px}.masthead-side{align-items:flex-start}.masthead .footer{text-align:left}}.volume-feedback p{margin:0}.volume-feedback .effective-title{font-weight:650;color:#fff;margin-bottom:4px}.volume-feedback .warn{color:#ffa7b0}
-</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><div class="masthead-side"><span class="offline">Un file. Sempre a portata di mano.</span><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione · <span id="version">Versione 3.0 · 12/10/2026 · 11:53</span></footer></div></header><main class="layout"><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
+</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><div class="masthead-side"><span class="offline">Un file. Sempre a portata di mano.</span><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione · <span id="version">Versione 3.1 · 12/10/2026 · 12:01</span></footer></div></header><main class="layout"><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
 <form id="form" novalidate>
 <div class="row"><div class="volume-question"><label for="volume">Definisci il <span class="accent">volume</span> della miscela</label><p class="note volume-note" id="aroma-volume-note" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-volume">Applica</button><button type="button" id="restore-volume" disabled>Ripristina</button></div></div><div class="controls"><input id="volume" type="text" inputmode="decimal" min="0.01" step="any" value="" required><span class="unit">ml</span></div></div>
 <div class="row"><div class="volume-question"><label for="target">Scegli la <span class="accent">nicotina</span> finale</label><p class="note volume-note" id="nicotine-hint" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-nicotine">Applica</button><button type="button" id="restore-nicotine" disabled>Ripristina</button></div></div><div class="controls"><input id="target" type="text" inputmode="decimal" min="0" step="any" value="" required><span class="unit">mg/ml</span></div></div>
@@ -273,17 +273,10 @@ function buildRecipeTable(){const head=$('recipes-head');const titles=document.c
   else{control=document.createElement('input');control.type='search';control.placeholder='Cerca…';}
   control.dataset.filter=c.key;control.setAttribute('aria-label','Filtra per '+c.title.toLocaleLowerCase('it'));control.addEventListener('input',renderRecipes);cell.append(control);filters.append(cell);}
  const th=document.createElement('th');th.scope='col';th.textContent='Azioni';titles.append(th);filters.append(document.createElement('th'));head.append(titles,filters);}
-// Suggerimenti per Nome aroma e Firma presi dalle ricette salvate: con una firma già scelta si propongono i suoi aromi.
-function updateSuggestions(){const fill=(id,items)=>{const list=$(id);list.textContent='';for(const [value,label] of items){const o=document.createElement('option');o.value=value;if(label)o.label=label;list.append(o);}};
- const uniq=(arr,key)=>[...new Map(arr.map(x=>[key(x).toLocaleLowerCase('it'),x])).values()];
- const sort=(a,b)=>a[0].localeCompare(b[0],'it',{sensitivity:'base'});
- const sig=$('recipe-signature').value.trim().toLocaleLowerCase('it'),bySig=sig&&recipes.some(x=>x.signature.toLocaleLowerCase('it')===sig)?recipes.filter(x=>x.signature.toLocaleLowerCase('it')===sig):recipes;
- fill('signature-options',uniq(recipes.filter(x=>x.signature),x=>x.signature).map(x=>[x.signature]).sort(sort));
- fill('flavour-options',uniq(bySig,x=>x.name+'\u0000'+x.signature).map(x=>[x.name,x.signature]).sort(sort));}
-// Scegliendo un aroma con una sola firma nell'elenco, la firma si compila da sola se è vuota.
-function completeSignature(){const name=$('recipe-flavour').value.trim().toLocaleLowerCase('it');if(!name||$('recipe-signature').value.trim())return;
- const sigs=[...new Set(recipes.filter(x=>x.name.toLocaleLowerCase('it')===name&&x.signature).map(x=>x.signature))];if(sigs.length===1){$('recipe-signature').value=sigs[0];updateSaveState();saveState();}}
-$('recipe-signature').addEventListener('input',updateSuggestions);$('recipe-flavour').addEventListener('change',()=>{completeSignature();updateSuggestions();});
+// Suggerimenti per Nome aroma e Firma presi dalle ricette salvate: ogni tendina completa solo il proprio campo.
+function updateSuggestions(){const fill=(id,values)=>{const list=$(id);list.textContent='';for(const v of values){const o=document.createElement('option');o.value=v;list.append(o);}};
+ const uniq=values=>[...new Map(values.filter(Boolean).map(v=>[v.toLocaleLowerCase('it'),v])).values()].sort((a,b)=>a.localeCompare(b,'it',{sensitivity:'base'}));
+ fill('signature-options',uniq(recipes.map(x=>x.signature)));fill('flavour-options',uniq(recipes.map(x=>x.name)));}
 function renderRecipes(){updateSuggestions();const body=$('recipes-body');body.textContent='';
  const active=columns.map(c=>[c,fold(document.querySelector('[data-filter="'+c.key+'"]').value.trim())]).filter(([,v])=>v);
  const shown=recipes.filter(x=>active.every(([c,v])=>c.options?fold(c.text(x))===v:fold(c.text(x)).includes(v))).sort(byName);
