@@ -33,7 +33,7 @@
 /* Crediti e versione nell'intestazione, sempre visibili senza scorrere. */
 .masthead-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px}.masthead .footer{margin:0;text-align:right}
 @media(max-width:760px){.masthead{flex-direction:column;align-items:flex-start;gap:12px}.masthead-side{align-items:flex-start}.masthead .footer{text-align:left}}.volume-feedback p{margin:0}.volume-feedback .effective-title{font-weight:650;color:#fff;margin-bottom:4px}.volume-feedback .warn{color:#ffa7b0}
-</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><div class="masthead-side"><div class="masthead-links"><a class="info-link" id="info-link" href="#informazioni">Informazioni e note legali</a><span class="offline">Un file. Sempre a portata di mano.</span></div><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione · <span id="version">Versione 3.5 · 12/10/2026 · 18:10</span></footer></div></header><main class="layout"><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
+</style></head><body><header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">a.</span><div><p class="brand-kicker">IL TUO LABORATORIO PERSONALE</p><h1>Atelier Liquidi</h1></div></div><div class="masthead-side"><div class="masthead-links"><a class="info-link" id="info-link" href="#informazioni">Informazioni e note legali</a><span class="offline">Un file. Sempre a portata di mano.</span></div><footer class="footer">Atelier Liquidi · Calcoli in ml, concentrazioni in mg/ml · Funziona anche senza connessione · <span id="version">Versione 3.6 · 12/10/2026 · 18:22</span></footer></div></header><main class="layout"><section class="card"><p class="eyebrow">01 / Imposta la miscela</p><p class="intro">Scegli le dosi. Esplora i suggerimenti. Prepara la tua miscela.</p>
 <form id="form" novalidate>
 <div class="row"><div class="volume-question"><label for="volume">Definisci il <span class="accent">volume</span> della miscela</label><p class="note volume-note" id="aroma-volume-note" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-volume">Applica</button><button type="button" id="restore-volume" disabled>Ripristina</button></div></div><div class="controls"><input id="volume" type="text" inputmode="decimal" min="0.01" step="any" value="" required><span class="unit">ml</span></div></div>
 <div class="row"><div class="volume-question"><label for="target">Scegli la <span class="accent">nicotina</span> finale</label><p class="note volume-note" id="nicotine-hint" aria-live="polite"></p><div class="hint-actions"><button type="button" id="apply-nicotine">Applica</button><button type="button" id="restore-nicotine" disabled>Ripristina</button></div></div><div class="controls"><input id="target" type="text" inputmode="decimal" min="0" step="any" value="" required><span class="unit">mg/ml</span></div></div>
@@ -453,7 +453,15 @@ function updateCompositionHint(){
 }
 // Proposte per l'aroma: la percentuale standard dello shot, oppure, se il volume che ne deriva non è un numero intero di ml
 // (es. 10 ml al 15% → 66,(6) ml), le percentuali vicine che danno un volume intero (15,(15)% → 66 ml, 14,93% → 67 ml).
-let aromaChoices=[];
+let aromaChoices=[],aromaFollowUp=false;
+// Dopo una proposta applicata: elenca i passi ancora da fare nelle altre schede, nell'ordine giusto.
+function updateAromaFollowUp(){if(!aromaFollowUp)return;
+ const f=format(),a=field('aroma');if(!(Number.isFinite(a)&&a>0&&a<=100))return;
+ const v=f.size*100/a,steps=[];
+ if($('volume').value.trim()===''||!applied('volume',v))steps.push('premi «Applica» sotto il volume per impostare '+nice(v)+' ml');
+ else{if(!$('apply-nicotine').disabled)steps.push('premi «Applica» sotto la nicotina, così usi basette intere; dopo controlla VG/PG');
+  else if(!$('apply-vg').disabled)steps.push('se vuoi dosi più tonde, premi «Applica» sotto VG/PG');}
+ $('aroma-hint').textContent='Fatto: aroma al '+nice(a)+'%. '+(steps.length?'Ora '+steps.join('; poi ')+'.'+($('volume').value.trim()===''||!applied('volume',v)?' Dopo il volume controlla anche nicotina e VG/PG: se propongono «Applica», usalo.':''):'Volume, nicotina e VG/PG sono già a posto.');}
 function updateAromaHint(){
  const f=format(),shot=f.percent,a=field('aroma'),typed=$('aroma').value.trim()!==''&&Number.isFinite(a)&&a>0&&a<=100,v=typed?f.size*100/a:NaN;
  const partial=typed&&Math.abs(v-Math.round(v))>1e-9;
@@ -466,7 +474,7 @@ function updateAromaHint(){
 // Ricalcolo automatico: ogni modifica aggiorna suggerimenti e dosi; con campi incompleti i risultati si svuotano.
 // I valori lunghi, come 14,(285714), usano un carattere più piccolo per stare nel campo.
 function fitFields(){for(const k of ['volume','target','vg','pg','aroma'])$(k).classList.toggle('long',$(k).value.length>8);}
-function refresh(){fitFields();updateAromaHint();updateAromaVolume();updateNicotineHint();updateCompositionHint();if(filled())calculate();else{clearResults();$('error').hidden=true;}updateSaveState();saveState();}
+function refresh(){fitFields();updateAromaHint();updateAromaVolume();updateNicotineHint();updateCompositionHint();updateAromaFollowUp();if(filled())calculate();else{clearResults();$('error').hidden=true;}updateSaveState();saveState();}
 // Memoria locale: l'ultima miscela resta nel browser di questo dispositivo e si ritrova riaprendo la pagina.
 const STORAGE_KEY='atelier-liquidi:miscela',savedKeys=['volume','target','vg','pg','aroma','base','strength','aroma-size','dose-precision','recipe-flavour','recipe-signature','recipe-maturation'];
 function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({fields:Object.fromEntries(savedKeys.map(k=>[k,$(k).value])),precise:preciseValues}));}catch(e){}}
@@ -594,7 +602,7 @@ function renderRecipes(){updateSuggestions();const body=$('recipes-body');body.t
 function loadRecord(x){const has=(id,v)=>[...$(id).options].some(o=>Number(o.value)===v);
  if(!has('base',x.base)||!has('strength',x.strength)){$('recipes-status').textContent='Impossibile caricare «'+x.name+'»: basette '+baseLabel(x.base)+' a '+x.strength+' mg/ml non sono tra le scelte disponibili.';return;}
  if(lastRecipe&&!recipes.some(y=>recordKey(y)===recordKey(makeRecord(lastRecipe)))&&!confirm('La miscela attuale non è salvata e verrà sostituita da «'+x.name+'». Continuare?'))return;
- for(const k of Object.keys(preciseValues))delete preciseValues[k];for(const group of ['volume','nicotine','composition','aroma']){restoreHistory[group].length=0;$('restore-'+group).disabled=true;}
+ aromaFollowUp=false;for(const k of Object.keys(preciseValues))delete preciseValues[k];for(const group of ['volume','nicotine','composition','aroma']){restoreHistory[group].length=0;$('restore-'+group).disabled=true;}
  $('aroma-size').value=x.format;$('base').value=String(x.base);$('strength').value=String(x.strength);$('dose-precision').value=String(x.precision);
  for(const [id,v] of [['volume',x.volume],['target',x.nicotine],['vg',x.vg],['pg',x.pg],['aroma',x.aroma]]){preciseValues[id]=fieldText(v);$(id).value=preciseValues[id].shown;}
  $('recipe-flavour').value=x.name;$('recipe-signature').value=x.signature;$('recipe-maturation').value=hasMaturation(x)?String(x.maturation):'';loadedId=x.id;refresh();
@@ -640,7 +648,7 @@ function refreshAll(){formatInputs();refresh();}
 
 $('form').addEventListener('submit',e=>{e.preventDefault();refreshAll()});
 for(const id of ['volume','target','vg','pg','aroma']){
- const input=$(id);
+ const input=$(id);if(id==='aroma')input.addEventListener('input',()=>{aromaFollowUp=false;});
  input.addEventListener('input',()=>{const pos=input.selectionStart;if(input.value.includes('.')){input.value=input.value.replaceAll('.',',');if(pos!==null&&input.setSelectionRange)input.setSelectionRange(pos,pos);}
   const other={vg:'pg',pg:'vg'}[id],v=field(id);if(other&&input.value.trim()!==''&&v>=0&&v<=100){preciseValues[other]=fieldText(100-v);$(other).value=preciseValues[other].shown;}
   refresh();});
@@ -650,20 +658,12 @@ for(const id of ['base','strength','dose-precision'])$(id).addEventListener('cha
 for(const [id,index] of [['apply-vg',0],['apply-pg',1]])$(id).addEventListener('click',()=>{const option=compositionOptions[index];if(!option)return;rememberValues('composition');delete preciseValues.vg;delete preciseValues.pg;$('vg').value=display(option.ratio);$('pg').value=display(100-option.ratio);refreshAll();});
 $('apply-volume').addEventListener('click',()=>{const a=field('aroma');if(!Number.isFinite(a)||a<=0||a>100)return;rememberValues('volume');$('volume').value=display(format().size*100/a);refreshAll();});
 $('apply-nicotine').addEventListener('click',()=>{const v=field('volume'),t=field('target'),s=field('strength');if($('volume').value===''||$('target').value===''||!Number.isFinite(v)||!Number.isFinite(t)||v<=0||t<0||t>s)return;const n=s===0?0:wholeBottles(v,t,s);rememberValues('nicotine');$('target').value=display(n*10*s/v);refreshAll();});
-// Applicando una proposta, se il volume era quello ricavato dall'aroma si aggiorna anche lui; se la nicotina usava basette intere,
-// si adegua per usare le stesse basette nel nuovo volume. «Ripristina» riporta tutti i valori cambiati.
+// «Applica» cambia solo l'aroma; sotto il campo compaiono i passi per adeguare volume, nicotina e VG/PG, ognuno col proprio «Applica».
 for(const [id,i] of [['apply-aroma',0],['apply-aroma-alt',1]])$(id).addEventListener('click',()=>{const c=aromaChoices[i];if(!c)return;
- const a=field('aroma'),v=field('volume'),follow=$('volume').value.trim()!==''&&Number.isFinite(a)&&a>0&&applied('volume',format().size*100/a);
- const t=field('target'),s=field('strength'),bottles=follow&&$('target').value.trim()!==''&&Number.isFinite(t)&&Number.isFinite(s)&&s>0&&t>0&&t<=s?wholeBottles(v,t,s):0;
- const nic=bottles>0&&applied('target',bottles*10*s/v);
- restoreHistory.aroma.push(Object.fromEntries(['aroma',...(follow?['volume']:[]),...(nic?['target']:[])].map(k=>[k,{shown:$(k).value,value:field(k)}])));$('restore-aroma').disabled=false;
- preciseValues.aroma=fieldText(c.percent);$('aroma').value=preciseValues.aroma.shown;
- if(follow){preciseValues.volume=fieldText(c.volume);$('volume').value=preciseValues.volume.shown;}
- if(nic){preciseValues.target=fieldText(bottles*10*s/c.volume);$('target').value=preciseValues.target.shown;}
- refreshAll();});
-for(const group of ['volume','nicotine','composition','aroma'])$('restore-'+group).addEventListener('click',()=>{const prior=restoreHistory[group].pop();if(!prior)return;for(const [key,value] of Object.entries(prior)){$(key).value=value.shown;preciseValues[key]=value;}$('restore-'+group).disabled=restoreHistory[group].length===0;refreshAll();});
+ rememberValues('aroma');preciseValues.aroma=fieldText(c.percent);$('aroma').value=preciseValues.aroma.shown;aromaFollowUp=true;refreshAll();});
+for(const group of ['volume','nicotine','composition','aroma'])$('restore-'+group).addEventListener('click',()=>{const prior=restoreHistory[group].pop();if(!prior)return;if(group==='aroma')aromaFollowUp=false;for(const [key,value] of Object.entries(prior)){$(key).value=value.shown;preciseValues[key]=value;}$('restore-'+group).disabled=restoreHistory[group].length===0;refreshAll();});
 // Nuova miscela: tutti i campi tornano ai valori iniziali; il formato dell'aroma si può conservare.
-function resetAll(format='10'){loadedId=null;for(const k of Object.keys(preciseValues))delete preciseValues[k];for(const group of ['volume','nicotine','composition','aroma']){restoreHistory[group].length=0;$('restore-'+group).disabled=true;}for(const k of ['volume','target','vg','pg','aroma','recipe-flavour','recipe-signature','recipe-maturation'])$(k).value='';$('base').value='50';$('strength').value='20';$('aroma-size').value=format;$('dose-precision').value='1';refresh();$('volume').focus();}
+function resetAll(format='10'){loadedId=null;aromaFollowUp=false;for(const k of Object.keys(preciseValues))delete preciseValues[k];for(const group of ['volume','nicotine','composition','aroma']){restoreHistory[group].length=0;$('restore-'+group).disabled=true;}for(const k of ['volume','target','vg','pg','aroma','recipe-flavour','recipe-signature','recipe-maturation'])$(k).value='';$('base').value='50';$('strength').value='20';$('aroma-size').value=format;$('dose-precision').value='1';refresh();$('volume').focus();}
 $('reset').addEventListener('click',()=>resetAll());
 $('aroma-size').addEventListener('change',()=>resetAll($('aroma-size').value));
 // Finestra «Informazioni e note legali».
