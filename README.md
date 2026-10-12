@@ -142,4 +142,4 @@ Se decidi di renderlo pubblico:
 Mauro Di Cola
 
 ## Ultimo aggiornamento
-Versione 3.3 · 12/10/2026 · 14:26 - Questo file va aggiornato periodicamente con data e note legali eventuali.
+Versione 3.4 · 12/10/2026 · 14:36 - Questo file va aggiornato periodicamente con data e note legali eventuali.
