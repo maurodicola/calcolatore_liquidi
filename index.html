@@ -5,7 +5,7 @@
 
 /* Basette ed errore affiancati, sopra le azioni. */
 #form>.row:nth-child(5){grid-column:1;grid-row:3;order:5;flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap}
-#form>.error{grid-column:2;grid-row:3;order:5;display:flex;align-items:center;margin:0;min-height:76px}
+#form>.error{grid-column:2;grid-row:3;order:5;display:flex;align-items:center;margin:0;min-height:76px}#form>.error[hidden]{display:none}
 #form>.identity{grid-column:1/-1;grid-row:4;order:6}#form>.actions{grid-column:1/-1;grid-row:5;order:7}
 @media(max-width:1100px){#form>.row:nth-child(5){grid-column:1;grid-row:auto}#form>.error{grid-column:1;grid-row:auto;order:6}#form>.identity{grid-column:1;grid-row:auto;order:7}#form>.actions{grid-column:1;grid-row:auto;order:8}}
 .dose-precision{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.dose-precision label{font-size:12px;color:var(--muted)}.dose-precision select{font-size:13px;height:36px}.actions{flex-wrap:wrap}.precision-caption{font-size:11px;color:#c1d1ca;line-height:1.5;margin:10px 0 0}
