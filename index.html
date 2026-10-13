@@ -466,7 +466,7 @@ function updateAromaFollowUp(){aromaPending=false;if(!aromaFollowUp)return;
  const v=f.size*100/a,steps=[];
  if($('volume').value.trim()===''||!applied('volume',v))steps.push('premi «Applica» sotto il volume per impostare '+nice(v)+' ml');
  else{if(!$('apply-nicotine').disabled)steps.push('premi «Applica» sotto la nicotina, così usi basette intere; dopo controlla VG/PG');
-  else if(!$('apply-vg').disabled)steps.push('premi «Applica» sotto VG/PG per riportarlo a un valore tondo');}
+  else if(!$('apply-vg').disabled)steps.push('se serve, premi «Applica» sotto VG/PG');}
  aromaPending=steps.length>0;$('aroma-hint').textContent='Fatto: aroma al '+nice(a)+'%. '+(steps.length?'Ora '+steps.join('; poi ')+'.'+($('volume').value.trim()===''||!applied('volume',v)?' Dopo il volume controlla anche nicotina e VG/PG: se propongono «Applica», usalo.':''):'Volume, nicotina e VG/PG sono già a posto.');}
 function updateAromaHint(){
  const f=format(),shot=f.percent,a=field('aroma'),typed=$('aroma').value.trim()!==''&&Number.isFinite(a)&&a>0&&a<=100,v=typed?f.size*100/a:NaN;
