@@ -87,8 +87,25 @@ Per usarlo:
 ├── LICENSE
 ├── LICENZA.md
 ├── README.md
-└── index.html
+├── index.html
+├── app/                      app per Windows (Tauri)
+│   ├── icon-source.png       icona di partenza
+│   └── src-tauri/            configurazione e codice dell'app
+└── .github/workflows/
+    └── app-windows.yml       costruzione automatica dell'installatore
 ```
+
+## 🪟 App per Windows
+
+L'app usa la stessa `index.html` del sito. In più salva da sola le ricette nel file
+`Documenti\Atelier Liquidi\atelier-liquidi-ricette.json`, senza chiedere permessi;
+se la cartella Documenti è sincronizzata (per esempio con OneDrive), il file viaggia con lei.
+Il file ha lo stesso formato di «Esporta JSON», quindi sul telefono si usa con «Importa».
+
+L'installatore viene costruito da GitHub Actions (flusso «App per Windows») a ogni modifica
+di `index.html` o della cartella `app/`, e si scarica dalla pagina dell'esecuzione, sezione «Artifacts».
+Non essendo firmato, al primo avvio Windows mostra «Windows ha protetto il PC»:
+«Ulteriori informazioni» → «Esegui comunque».
 
 ## ▶️ Come usare
 
@@ -142,4 +159,4 @@ Se decidi di renderlo pubblico:
 Mauro Di Cola
 
 ## Ultimo aggiornamento
-Versione 4.0 · 14/10/2026 · 01:02 - Questo file va aggiornato periodicamente con data e note legali eventuali.
+Versione 4.4 · 14/10/2026 · 22:28 - Questo file va aggiornato periodicamente con data e note legali eventuali.
