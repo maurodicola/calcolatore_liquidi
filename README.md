@@ -101,6 +101,8 @@ L'app usa la stessa `index.html` del sito. In più salva da sola le ricette nel 
 `Documenti\Atelier Liquidi\atelier-liquidi-ricette.json`, senza chiedere permessi;
 se la cartella Documenti è sincronizzata (per esempio con OneDrive), il file viaggia con lei.
 Il file ha lo stesso formato di «Esporta JSON», quindi sul telefono si usa con «Importa».
+Con «Cambia destinazione» si sceglie un'altra cartella per l'archivio (se lì c'è già un archivio, le ricette si uniscono).
+«Esporta JSON» ed «Esporta CSV» aprono la finestra di Windows per scegliere dove salvare.
 
 L'installatore viene costruito da GitHub Actions (flusso «App per Windows») a ogni modifica
 di `index.html` o della cartella `app/`, e si scarica dalla pagina dell'esecuzione, sezione «Artifacts».
@@ -159,4 +161,4 @@ Se decidi di renderlo pubblico:
 Mauro Di Cola
 
 ## Ultimo aggiornamento
-Versione 4.4 · 14/10/2026 · 22:28 - Questo file va aggiornato periodicamente con data e note legali eventuali.
+Versione 4.5 · 14/10/2026 · 23:11 - Questo file va aggiornato periodicamente con data e note legali eventuali.
