@@ -67,7 +67,7 @@ L’obiettivo è semplice:
   - aroma
 - salva e gestione ricette personali nel browser
 - esportazione in JSON o CSV e importazione da JSON
-- archivio su file (Chrome ed Edge sul computer e i browser del telefono che lo permettono): le ricette si salvano anche in un file .json, per esempio in Documenti
+- archivio su file (Chrome ed Edge sul computer; sul telefono si importa il file): le ricette si salvano anche in un file .json, per esempio in Documenti
 - stampa di etichette
 
 ## 📦 Requisiti
@@ -143,4 +143,4 @@ Se decidi di renderlo pubblico:
 Mauro Di Cola
 
 ## Ultimo aggiornamento
-Versione 4.2 · 14/10/2026 · 21:54 - Questo file va aggiornato periodicamente con data e note legali eventuali.
+Versione 4.3 · 14/10/2026 · 22:12 - Questo file va aggiornato periodicamente con data e note legali eventuali.
