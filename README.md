@@ -66,8 +66,7 @@ L’obiettivo è semplice:
   - basette
   - aroma
 - salva e gestione ricette personali nel browser
-- esportazione in JSON o CSV e importazione da JSON
-- archivio su file (Chrome ed Edge sul computer; sul telefono si importa il file): le ricette si salvano anche in un file .json, per esempio in Documenti
+- esportazione in JSON o CSV
 - stampa di etichette
 
 ## 📦 Requisiti
@@ -143,4 +142,4 @@ Se decidi di renderlo pubblico:
 Mauro Di Cola
 
 ## Ultimo aggiornamento
-Versione 4.3 · 14/10/2026 · 22:12 - Questo file va aggiornato periodicamente con data e note legali eventuali.
+Versione 4.0 · 14/10/2026 · 01:02 - Questo file va aggiornato periodicamente con data e note legali eventuali.
