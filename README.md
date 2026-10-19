@@ -10,6 +10,8 @@ Un piccolo strumento web per calcolare la miscela di liquidi per sigarette elett
 
 Questo progetto è pensato come strumento personale e educativo, da usare in modo responsabile e conforme alle leggi del proprio Paese.
 
+> Nella cartella [`tabaccheria/`](tabaccheria/) c'è anche una web app separata per la gestione di una piccola tabaccheria: cassa, scorte, ordine settimanale, libretto crediti e listino ufficiale dei tabacchi.
+
 ## ⚠️ Disclaimer legale e sanitario
 
 Questo repository contiene un semplice calcolatore web per uso personale, educativo e di riferimento. Non è un manuale per la produzione commerciale, la distribuzione o la vendita di liquidi per sigarette elettroniche.

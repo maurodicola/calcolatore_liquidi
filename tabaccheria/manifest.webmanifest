@@ -1,0 +1,10 @@
+{
+  "name": "Tabaccheria · Gestione del negozio",
+  "short_name": "Tabaccheria",
+  "lang": "it",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f2ec",
+  "theme_color": "#1f3550",
+  "icons": [{ "src": "icona.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

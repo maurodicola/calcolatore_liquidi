@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tabaccheria · Gestione del negozio</title>
+<meta name="theme-color" content="#1f3550">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icona.svg" type="image/svg+xml">
+<style>
+:root{--ink:#1f2d3d;--muted:#5f6b78;--paper:#f4f2ec;--card:#fffefa;--blue:#1f3550;--blue2:#2c4d73;--soft:#e8edf3;--red:#b52b3b;--redsoft:#f7e5e4;--green:#2f6b4f;--greensoft:#e3efe7;--amber:#8a5a00;--ambersoft:#fbf0d9;--line:#dde2e8}
+*{box-sizing:border-box}html{scrollbar-gutter:stable}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Segoe UI",Calibri,Arial,sans-serif;font-size:15px;line-height:1.4}
+button,input,select,textarea{font:inherit;color:inherit}
+input,select,textarea{background:#f0f3f6;border:1px solid transparent;border-radius:8px;padding:7px 10px;min-height:38px;min-width:0}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--blue2);outline-offset:1px;background:#fff}
+input.num{width:84px;text-align:right;font-variant-numeric:tabular-nums}input.money{width:110px;text-align:right;font-variant-numeric:tabular-nums}
+button{cursor:pointer;border:0;border-radius:8px;min-height:38px;padding:7px 14px;font-weight:650;background:var(--soft);color:var(--blue)}
+button:hover{filter:brightness(.96)}button:focus-visible{outline:2px solid var(--red);outline-offset:2px}button:disabled{opacity:.45;cursor:default}
+button.primary{background:var(--blue);color:#fff}button.danger{background:var(--redsoft);color:#922637}button.ghost{background:transparent;color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}button.small{min-height:30px;padding:4px 10px;font-size:13px}
+header.top{background:var(--blue);color:#fff;padding:14px 24px 0}
+.top-row{max-width:1400px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:44px;height:44px;border-radius:8px;background:#11202f;display:grid;place-items:center;font-family:Georgia,serif;font-size:30px;font-weight:700;color:#fff;box-shadow:inset 0 0 0 2px #ffffff33}
+.brand h1{margin:0;font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:26px;line-height:1.1}.brand p{margin:0;font-size:12px;color:#c9d6e4;letter-spacing:.5px}
+.status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px}.chip{padding:6px 12px;border-radius:30px;font-weight:650;font-size:13px;background:#ffffff1c}.chip.open{background:#cfe9d9;color:#17402c}.chip.closed{background:#f3d3d6;color:#6e1a26}.chip.holiday{background:#fbe6b8;color:#5a3b00}
+.clock{font-variant-numeric:tabular-nums;color:#dfe8f1}
+nav.tabs{max-width:1400px;margin:12px auto 0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin}
+nav.tabs a{color:#dfe8f1;text-decoration:none;padding:10px 14px;border-radius:10px 10px 0 0;font-weight:650;font-size:14px;white-space:nowrap}nav.tabs a:hover{background:#ffffff14}nav.tabs a.active{background:var(--paper);color:var(--blue)}
+nav.tabs .badge{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;text-align:center;line-height:18px}
+main{max-width:1400px;margin:0 auto;padding:22px 24px 80px}
+h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:26px;margin:0 0 4px}h3{font-size:16px;margin:0 0 10px;color:var(--blue)}
+.intro{color:var(--muted);margin:0 0 18px;max-width:900px}
+.card{background:var(--card);border-radius:14px;padding:18px;box-shadow:0 3px 16px #1f2d3d08;min-width:0}
+.grid2{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:18px;align-items:start}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.stack{display:flex;flex-direction:column;gap:18px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row.end{justify-content:flex-end}.spacer{flex:1}
+.field{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);font-weight:600}.field input,.field select,.field textarea{color:var(--ink);font-weight:400;font-size:15px}
+.note{font-size:13px;color:var(--muted);margin:6px 0 0}.warn{color:var(--red);font-weight:600}.ok{color:var(--green);font-weight:600}
+.reparti{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:14px}
+.reparti button{min-height:58px;background:#f0f3f6;color:var(--ink);text-align:left;padding:8px 12px;font-size:14px;line-height:1.2;display:flex;align-items:center;gap:8px}
+.reparti button .ico{font-size:20px}.reparti button.sel{background:var(--blue);color:#fff}.reparti button.neg{background:var(--ambersoft)}.reparti button.neg.sel{background:var(--amber);color:#fff}
+.linea{background:#f6f8fa;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.suggest-wrap{position:relative;flex:1 1 260px}.suggest-wrap input{width:100%}
+.suggest{position:absolute;left:0;right:0;top:100%;margin:4px 0 0;padding:4px;list-style:none;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 24px #1f2d3d22;z-index:30;max-height:300px;overflow:auto}.suggest[hidden]{display:none}
+.suggest li{padding:7px 10px;border-radius:6px;cursor:pointer;display:flex;justify-content:space-between;gap:10px}.suggest li:hover,.suggest li.active{background:var(--soft)}.suggest li small{color:var(--muted)}
+.conto{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+.conto-line{display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line)}.conto-line .d{flex:1}.conto-line .a{font-variant-numeric:tabular-nums;font-weight:650;white-space:nowrap}
+.totale{display:flex;justify-content:space-between;align-items:baseline;margin:10px 0}.totale strong{font-family:Georgia,serif;font-size:32px;font-weight:400}
+.pay{display:flex;gap:6px;flex-wrap:wrap}.pay label{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:8px;background:#f0f3f6;cursor:pointer;font-weight:600;font-size:14px}.pay input{min-height:0}.pay label:has(input:checked){background:var(--blue);color:#fff}
+.alert{padding:10px 12px;border-radius:10px;margin:0 0 8px;font-size:14px;display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.alert.info{background:var(--soft)}.alert.warn{background:var(--redsoft);color:#7d1f2d;font-weight:400}.alert.amber{background:var(--ambersoft);color:#5a3b00}.alert.good{background:var(--greensoft);color:#17402c}
+.alert a{color:inherit;font-weight:650}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}.kpi{background:#f6f8fa;border-radius:10px;padding:10px 12px}.kpi span{display:block;font-size:12px;color:var(--muted);font-weight:600}.kpi b{font-size:21px;font-weight:600;font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:14px}th{text-align:left;font-size:12px;color:var(--blue);font-weight:700;letter-spacing:.3px;padding:6px 6px;border-bottom:2px solid var(--line);white-space:nowrap}td{padding:6px;border-bottom:1px solid var(--line);vertical-align:middle}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}tr.low td{background:#fdf2f2}tr.muted td{color:var(--muted)}
+.table-wrap{overflow-x:auto}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--soft);color:var(--blue);white-space:nowrap}.tag.red{background:var(--redsoft);color:#922637}.tag.green{background:var(--greensoft);color:var(--green)}.tag.amber{background:var(--ambersoft);color:var(--amber)}
+.small{font-size:12px;color:var(--muted)}
+dialog{width:min(820px,calc(100vw - 24px));max-height:calc(100vh - 40px);border:0;border-radius:16px;padding:0;background:var(--card);color:var(--ink);box-shadow:0 20px 60px #1f2d3d55}dialog::backdrop{background:#1f2d3d99}
+.dlg-head{position:sticky;top:0;background:var(--card);display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);z-index:2}.dlg-head h3{margin:0;font-size:19px}.dlg-body{padding:16px 20px 20px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:30px;font-size:14px;box-shadow:0 8px 24px #0004;z-index:100;opacity:0;transition:opacity .2s;pointer-events:none}.toast.show{opacity:1}
+.empty{color:var(--muted);font-style:italic;margin:8px 0}
+.conto-reg{border-bottom:1px solid var(--line);padding:8px 0}.conto-reg .h{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;font-size:13px;color:var(--muted)}.conto-reg .h b{color:var(--ink);font-size:15px;font-variant-numeric:tabular-nums}.conto-reg ul{margin:3px 0 0;padding-left:18px;font-size:13px}
+footer.foot{max-width:1400px;margin:0 auto;padding:0 24px 30px;font-size:11px;color:var(--muted)}
+.print-only{display:none}
+@media(max-width:1000px){.grid2,.grid3{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){header.top{padding:12px 14px 0}main{padding:16px 12px 80px}.brand h1{font-size:22px}.clock{display:none}input.num{width:66px}}
+@media print{@page{size:A4;margin:12mm}body{background:#fff}header.top,nav,footer.foot,.no-print,button{display:none!important}main{padding:0;max-width:none}.card{box-shadow:none;padding:0}.print-only{display:block}input{background:none;border:0;padding:0;min-height:0}}
+</style></head>
+<body>
+<header class="top">
+ <div class="top-row">
+  <div class="brand"><span class="brand-mark" aria-hidden="true">T</span><div><p>GESTIONE DEL NEGOZIO</p><h1 id="nome-negozio">Tabaccheria</h1></div></div>
+  <div class="status"><span id="stato-negozio" class="chip"></span><span class="clock" id="orologio"></span></div>
+ </div>
+ <nav class="tabs" id="tabs"></nav>
+</header>
+<main id="main"></main>
+<footer class="foot">I dati restano su questo computer, nel browser. Fai spesso una copia di sicurezza (Impostazioni → Copia di sicurezza). · Prezzi dei tabacchi dal listino ufficiale ADM, scaricato da tabaccai.it · <span id="versione">Versione 1.0 · 19/10/2026</span></footer>
+<dialog id="dlg"><div class="dlg-head"><h3 id="dlg-title"></h3><button class="ghost small" data-act="dlg-close" aria-label="Chiudi">✕</button></div><div class="dlg-body" id="dlg-body"></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="listino.js"></script>
+<script>
+'use strict';
+/* ============ Utilità ============ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const EUR = new Intl.NumberFormat('it-IT', {style:'currency', currency:'EUR'});
+const eur = c => EUR.format((c || 0) / 100);
+const cents = v => { let s = String(v ?? '').trim().replace(/[€\s]/g, ''); if (!s) return null; if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.'); const n = parseFloat(s); return isFinite(n) ? Math.round(n * 100) : null; };
+const euroIn = c => c == null ? '' : (c / 100).toFixed(2).replace('.', ',');
+const int = v => { const n = parseInt(String(v ?? '').trim(), 10); return isFinite(n) ? n : null; };
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const pad = n => String(n).padStart(2, '0');
+const dayKey = d => { d = new Date(d); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+const today = () => dayKey(new Date());
+const fmtDate = k => { if (!k) return ''; const [y, m, d] = k.slice(0, 10).split('-'); return d + '/' + m + '/' + y; };
+const fmtTime = t => { const d = new Date(t); return pad(d.getHours()) + ':' + pad(d.getMinutes()); };
+const addDays = (k, n) => { const d = new Date(k + 'T12:00:00'); d.setDate(d.getDate() + n); return dayKey(d); };
+const GIORNI = ['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'];
+const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+let toastTimer;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2600); }
+
+/* ============ Reparti della cassa ============ */
+const REPARTI = [
+ {id:'tabacchi', nome:'Tabacchi', ico:'🚬', tipo:'tabacchi'},
+ {id:'gratta', nome:'Gratta e vinci', ico:'🎟️', tipo:'gratta'},
+ {id:'lotto', nome:'Lotto e giochi', ico:'🍀', tipo:'libero', aggio:'lotto', voci:['Lotto','10eLotto','SuperEnalotto','Million Day','Altro gioco']},
+ {id:'ricariche', nome:'Ricariche', ico:'📱', tipo:'libero', aggio:'ricariche', voci:['TIM','Vodafone','WindTre','Iliad','Ho.','Kena','Very Mobile','PostePay','Carta prepagata','Altro']},
+ {id:'servizi', nome:'Pagamenti e servizi', ico:'🧾', tipo:'servizi', voci:['Bollettino','PagoPA','Bollo auto','Bolletta','Multa','Spedizione','Altro servizio']},
+ {id:'copie', nome:'Fotocopie e stampe', ico:'🖨️', tipo:'copie'},
+ {id:'accessori', nome:'Accendini e cartine', ico:'🔥', tipo:'articoli'},
+ {id:'batterie', nome:'Batterie', ico:'🔋', tipo:'articoli'},
+ {id:'cancelleria', nome:'Cancelleria', ico:'✏️', tipo:'articoli'},
+ {id:'snack', nome:'Patatine e caramelle', ico:'🍬', tipo:'articoli'},
+ {id:'sale', nome:'Sale', ico:'🧂', tipo:'articoli'},
+ {id:'cartoline', nome:'Cartoline', ico:'✉️', tipo:'articoli'},
+ {id:'altro', nome:'Altro', ico:'➕', tipo:'libero'},
+ {id:'vincite', nome:'Vincita pagata', ico:'💶', tipo:'libero', negativo:true, voci:['Gratta e vinci','Lotto','10eLotto','Altro']}
+];
+const REP = Object.fromEntries(REPARTI.map(r => [r.id, r]));
+const REP_ARTICOLI = REPARTI.filter(r => r.tipo === 'articoli');
+const PAGAMENTI = {contanti:'Contanti', carta:'Carta / bancomat', libretto:'Sul libretto', distributore:'Distributore 24h'};
+
+/* ============ Dati ============ */
+const KEY = 'tabaccheria.dati.v1', LKEY = 'tabaccheria.listino.v1';
+function defaults() {
+ const a = (nome, rep) => ({id:uid(), nome, rep, prezzo:null, costo:null, scorta:0, minimo:0});
+ return {
+  versione:1,
+  negozio:{nome:'Tabaccheria di Forme', orari:[['09:30','13:00'],['16:30','20:00']], chiusoGiorni:[], ferie:[], giornoOrdine:1, giornoConsegna:3,
+   prezzoCopia:15, prezzoStampa:20, aggi:{tabacchi:10, gratta:8, lotto:8, ricariche:3}, ultimoBackup:null, creato:new Date().toISOString()},
+  assortimento:{}, articoli:[
+   a('Pile AA stilo (conf. 4)','batterie'), a('Pile AAA ministilo (conf. 4)','batterie'), a('Pila a bottone CR2032','batterie'), a('Pila a bottone CR2025','batterie'), a('Pila a bottone LR44','batterie'),
+   a('Sale fino 1 kg','sale'), a('Sale grosso 1 kg','sale'),
+   a('Patatine','snack'), a('Caramelle','snack'), a('Gomme da masticare','snack'),
+   a('Accendino','accessori'), a('Cartine','accessori'), a('Filtri','accessori'),
+   a('Penna a sfera','cancelleria'), a('Quaderno','cancelleria'), a('Busta da lettera','cancelleria'), a('Francobollo','cancelleria'),
+   a('Cartolina','cartoline')],
+  movimenti:[], libretto:[], clienti:[], ordini:[], gratta:[], promemoria:[]
+ };
+}
+function load() {
+ try { const raw = localStorage.getItem(KEY); if (raw) { const d = JSON.parse(raw); const def = defaults(); for (const k in def) if (d[k] == null) d[k] = def[k]; d.negozio = Object.assign(def.negozio, d.negozio); d.negozio.aggi = Object.assign(defaults().negozio.aggi, d.negozio.aggi); return d; } } catch (e) { console.error(e); }
+ return defaults();
+}
+let D = load(), saveFailed = false;
+function save() { try { localStorage.setItem(KEY, JSON.stringify(D)); saveFailed = false; } catch (e) { saveFailed = true; toast('Attenzione: non riesco a salvare i dati nel browser!'); } }
+
+/* ============ Listino tabacchi ============ */
+const CAT_BREVE = {'Sigarette':'Sigarette','Tabacco da inalazione senza combustione':'Stick da riscaldare','Trinciati per sigarette':'Trinciati','Sigari':'Sigari','Sigaretti':'Sigaretti','Altri Tabacchi da fumo':'Pipa e narghilè','Tabacco da fiuto o da mastico':'Fiuto e mastico'};
+let LISTINO, byCode;
+function loadListino() {
+ let l = null;
+ try { const raw = localStorage.getItem(LKEY); if (raw) l = JSON.parse(raw); } catch (e) {}
+ LISTINO = l || window.LISTINO_BASE || {vigore:'', aggiornato:'', categorie:[], prodotti:[]};
+ byCode = new Map();
+ for (const p of LISTINO.prodotti) { const cat = LISTINO.categorie[p[0]]; byCode.set(String(p[1]), {cod:String(p[1]), cat, breve:CAT_BREVE[cat] || cat, nome:p[2], prezzo:Math.round(p[3] * 100), conf:p[4]}); }
+}
+loadListino();
+const prodotto = cod => byCode.get(String(cod));
+function prezzoTab(cod) { const p = prodotto(cod); if (p) return p.prezzo; const a = D.assortimento[cod]; return a ? a.prezzo : 0; }
+function nomeTab(cod) { const p = prodotto(cod); if (p) return p.nome; const a = D.assortimento[cod]; return a ? a.nome : 'Codice ' + cod; }
+function multiploPredefinito(cat) { return (cat === 'Sigarette' || cat === 'Tabacco da inalazione senza combustione') ? 10 : 1; }
+function aggiungiAssortimento(cod) {
+ const p = prodotto(cod); if (!p || D.assortimento[cod]) return;
+ D.assortimento[cod] = {nome:p.nome, cat:p.cat, prezzo:p.prezzo, banco:0, distr:0, minimo:0, obiettivo:0, multiplo:multiploPredefinito(p.cat)};
+}
+function cercaListino(q, cat, limite = 40) {
+ const t = norm(q).trim(); if (!t && !cat) return [];
+ const out = [], parole = t.split(/\s+/).filter(Boolean);
+ for (const p of byCode.values()) {
+  if (cat && p.cat !== cat) continue;
+  const n = norm(p.nome);
+  if (parole.every(w => n.includes(w)) || p.cod === t) { out.push(p); }
+ }
+ out.sort((a, b) => (norm(b.nome).startsWith(t) - norm(a.nome).startsWith(t)) || a.nome.localeCompare(b.nome));
+ return out.slice(0, limite);
+}
+
+/* ============ Orari, ferie, stato del negozio ============ */
+const toMin = hhmm => { const [h, m] = String(hhmm || '0:0').split(':').map(Number); return h * 60 + (m || 0); };
+function inFerie(k) { return D.negozio.ferie.find(f => f.dal <= k && k <= f.al); }
+function apertoIl(k) { const g = new Date(k + 'T12:00:00').getDay(); return !inFerie(k) && !D.negozio.chiusoGiorni.includes(g); }
+function statoNegozio(now = new Date()) {
+ const k = dayKey(now), m = now.getHours() * 60 + now.getMinutes(), f = inFerie(k);
+ const prossima = () => { for (let i = 0; i < 60; i++) { const kk = addDays(k, i); if (!apertoIl(kk)) continue; for (const [a] of D.negozio.orari) if (i > 0 || toMin(a) > m) return {k:kk, ora:a, i}; } return null; };
+ const descr = p => !p ? '' : p.i === 0 ? 'alle ' + p.ora : p.i === 1 ? 'domani alle ' + p.ora : GIORNI[new Date(p.k + 'T12:00:00').getDay()] + ' ' + fmtDate(p.k).slice(0, 5) + ' alle ' + p.ora;
+ if (f) return {cls:'holiday', testo:'In ferie' + (f.nota ? ' (' + f.nota + ')' : '') + ' · riapre ' + descr(prossima())};
+ if (apertoIl(k)) for (const [a, c] of D.negozio.orari) if (m >= toMin(a) && m < toMin(c)) return {cls:'open', testo:'Aperto · chiude alle ' + c};
+ return {cls:'closed', testo:'Chiuso · riapre ' + descr(prossima())};
+}
+function inizioSettimana(k) { const d = new Date(k + 'T12:00:00'); const g = (d.getDay() + 6) % 7; return addDays(k, -g); }
+
+/* ============ Calcoli su vendite e scorte ============ */
+const isVendita = m => !REP[m.rep]?.negativo;
+function guadagnoStimato(m) {
+ const ag = D.negozio.aggi, r = REP[m.rep];
+ if (!r || r.negativo) return 0;
+ if (m.rep === 'tabacchi') return Math.round(m.imp * ag.tabacchi / 100);
+ if (m.rep === 'gratta') return Math.round(m.imp * ag.gratta / 100);
+ if (r.aggio) return Math.round(m.imp * (ag[r.aggio] || 0) / 100);
+ if (m.rep === 'servizi') return m.comm || 0;
+ if (m.rep === 'copie') return m.imp;
+ if (r.tipo === 'articoli') { const a = D.articoli.find(x => x.id === m.art); return a && a.costo != null && m.prezzoU != null ? (m.prezzoU - a.costo) * m.qta : null; }
+ return null;
+}
+function venditeTabacco(cod, giorni = 28) { const da = addDays(today(), -giorni + 1); let q = 0; for (const m of D.movimenti) if (m.cod === cod && dayKey(m.t) >= da) q += m.qta; return q; }
+function vendutiGratta(id) { let q = 0; for (const m of D.movimenti) if (m.gv === id) q += m.qta; return q; }
+function saldoCliente(id) { return D.libretto.filter(x => x.cli === id).reduce((s, x) => s + x.imp, 0); }
+const nomeCliente = id => D.clienti.find(c => c.id === id)?.nome || 'Cliente';
+function proposta(cod) {
+ const a = D.assortimento[cod], tot = a.banco + a.distr, mult = Math.max(1, a.multiplo || 1);
+ const livello = a.obiettivo > 0 ? a.obiettivo : (tot < a.minimo ? a.minimo : 0);
+ const serve = livello - tot;
+ return serve > 0 ? Math.ceil(serve / mult) * mult : 0;
+}
+const sottoMinimoTab = () => Object.entries(D.assortimento).filter(([, a]) => a.minimo > 0 && a.banco + a.distr < a.minimo);
+const sottoMinimoArt = () => D.articoli.filter(a => a.minimo > 0 && a.scorta < a.minimo);
+const ordineAperto = () => D.ordini.find(o => o.stato !== 'ricevuto');
+
+/* ============ Navigazione ============ */
+const PAGINE = [['oggi','Oggi · Cassa'],['tabacchi','Tabacchi'],['ordine','Ordine settimanale'],['articoli','Altri articoli'],['gratta','Gratta e vinci'],['libretto','Libretto crediti'],['registro','Registro e conti'],['impostazioni','Impostazioni']];
+let pagina = 'oggi';
+function route() { const h = location.hash.slice(1); pagina = PAGINE.some(p => p[0] === h) ? h : 'oggi'; render(); }
+window.addEventListener('hashchange', route);
+function renderTabs() {
+ const o = ordineAperto(), deb = D.clienti.filter(c => saldoCliente(c.id) > 0).length;
+ const badge = {tabacchi:sottoMinimoTab().length, articoli:sottoMinimoArt().length, ordine:o && o.stato === 'bozza' ? 1 : 0, libretto:deb};
+ $('#tabs').innerHTML = PAGINE.map(([id, t]) => `<a href="#${id}" class="${id === pagina ? 'active' : ''}">${t}${badge[id] ? `<span class="badge">${badge[id]}</span>` : ''}</a>`).join('');
+}
+function renderHeader() {
+ $('#nome-negozio').textContent = D.negozio.nome || 'Tabaccheria';
+ const s = statoNegozio(); const el = $('#stato-negozio'); el.className = 'chip ' + s.cls; el.textContent = s.testo;
+ const n = new Date(); $('#orologio').textContent = GIORNI[n.getDay()] + ' ' + fmtDate(today()) + ' · ' + fmtTime(n);
+}
+setInterval(renderHeader, 20000);
+function render() {
+ renderHeader(); renderTabs();
+ const f = {oggi:pOggi, tabacchi:pTabacchi, ordine:pOrdine, articoli:pArticoli, gratta:pGratta, libretto:pLibretto, registro:pRegistro, impostazioni:pImpostazioni}[pagina];
+ $('#main').innerHTML = f();
+ afterRender[pagina]?.();
+}
+const afterRender = {};
+
+/* ============ Pagina: Oggi · Cassa ============ */
+let conto = [], sel = 'tabacchi', lineaTmp = {};
+function promemoria() {
+ const out = [], k = today(), g = new Date().getDay(), n = D.negozio, o = ordineAperto();
+ const settimana = inizioSettimana(k);
+ if (g === n.giornoOrdine && !(o && o.stato === 'inviato') && !D.ordini.some(x => x.inviato && x.inviato >= settimana))
+  out.push(['amber', `Oggi è ${GIORNI[g]}: giorno dell’ordine dei tabacchi.`, '#ordine', 'Prepara l’ordine']);
+ if (o && o.stato === 'inviato') out.push([g === n.giornoConsegna ? 'amber' : 'info', g === n.giornoConsegna ? 'Oggi dovrebbe arrivare la consegna dei tabacchi.' : `Ordine inviato il ${fmtDate(o.inviato)}, in attesa di consegna.`, '#ordine', 'Registra la consegna']);
+ const st = sottoMinimoTab(); if (st.length) out.push(['warn', `${st.length} tabacch${st.length === 1 ? 'o' : 'i'} sotto la scorta minima: ${st.slice(0, 4).map(([c]) => esc(nomeTab(c))).join(', ')}${st.length > 4 ? '…' : ''}`, '#tabacchi', 'Vedi']);
+ const sa = sottoMinimoArt(); if (sa.length) out.push(['warn', `${sa.length} articol${sa.length === 1 ? 'o' : 'i'} da riordinare: ${sa.slice(0, 4).map(a => esc(a.nome)).join(', ')}${sa.length > 4 ? '…' : ''}`, '#articoli', 'Vedi']);
+ const ga = D.gratta.filter(p => !p.attivato && !p.chiuso); if (ga.length) out.push(['amber', `${ga.length} pacchett${ga.length === 1 ? 'o' : 'i'} di gratta e vinci da attivare.`, '#gratta', 'Attiva']);
+ const deb = D.clienti.reduce((s, c) => s + Math.max(0, saldoCliente(c.id)), 0); if (deb > 0) out.push(['info', `Sul libretto ci sono ${eur(deb)} da incassare.`, '#libretto', 'Libretto']);
+ const fe = n.ferie.filter(f => f.dal > k && f.dal <= addDays(k, 21)).sort((a, b) => a.dal.localeCompare(b.dal))[0];
+ if (fe) out.push(['amber', `Ferie dal ${fmtDate(fe.dal)} al ${fmtDate(fe.al)}: ricorda l’avviso in vetrina e l’ordine prima di partire.`, '#impostazioni', 'Orari']);
+ const ub = n.ultimoBackup; if (!ub || ub < addDays(k, -7)) out.push(['warn', ub ? `L’ultima copia di sicurezza è del ${fmtDate(ub)}.` : 'Non hai ancora fatto una copia di sicurezza dei dati.', '#impostazioni', 'Fai la copia']);
+ for (const p of D.promemoria.filter(p => !p.fatto && (!p.data || p.data <= k))) out.push(['info', '📌 ' + esc(p.testo) + (p.data ? ` <span class="small">(${fmtDate(p.data)})</span>` : ''), null, null, p.id]);
+ if (saveFailed) out.unshift(['warn', 'Il browser non riesce a salvare: fai subito una copia di sicurezza.', '#impostazioni', 'Copia']);
+ return out;
+}
+function riepilogo(da, a) {
+ const mov = D.movimenti.filter(m => { const k = dayKey(m.t); return k >= da && k <= a; });
+ const lib = D.libretto.filter(x => { const k = dayKey(x.t); return k >= da && k <= a; });
+ const r = {mov, vendite:0, pag:{contanti:0, carta:0, libretto:0, distributore:0}, vincite:0, rientri:{contanti:0, carta:0}, guadagno:0, guadagnoParziale:false, rep:{}};
+ for (const m of mov) {
+  const tot = m.imp + (m.comm || 0);
+  if (isVendita(m)) r.vendite += tot; else r.vincite += -m.imp;
+  r.pag[m.pag] = (r.pag[m.pag] || 0) + tot;
+  const g = guadagnoStimato(m); if (g == null) r.guadagnoParziale = true; else r.guadagno += g;
+  const x = r.rep[m.rep] ||= {n:0, qta:0, imp:0, g:0}; x.n++; x.qta += m.qta || 0; x.imp += tot; x.g += g || 0;
+ }
+ for (const x of lib) if (x.imp < 0) r.rientri[x.via || 'contanti'] += -x.imp;
+ r.cassa = r.pag.contanti + r.rientri.contanti;
+ return r;
+}
+function pOggi() {
+ const pm = promemoria(), r = riepilogo(today(), today());
+ const conti = gruppiConti(r.mov).slice(0, 12);
+ return `<div class="grid2">
+ <section class="card"><h2>Cassa</h2><p class="intro">Scegli il reparto, aggiungi al conto e registra. Ogni vendita aggiorna da sola le scorte.</p>
+  <div class="reparti">${REPARTI.map(x => `<button data-act="rep" data-id="${x.id}" class="${x.id === sel ? 'sel' : ''} ${x.negativo ? 'neg' : ''}"><span class="ico" aria-hidden="true">${x.ico}</span>${x.nome}</button>`).join('')}</div>
+  <div class="linea" id="linea">${formLinea()}</div>
+  <div class="conto">${htmlConto()}</div>
+ </section>
+ <div class="stack">
+  <section class="card"><h3>Da ricordare</h3>${pm.length ? pm.map(([c, t, h, l, id]) => `<div class="alert ${c}"><span>${t}</span>${h ? `<a href="${h}">${l}</a>` : id ? `<button class="small ghost" data-act="prom-fatto" data-id="${id}">Fatto</button>` : ''}</div>`).join('') : '<div class="alert good">Tutto in ordine. Buon lavoro!</div>'}
+   <form class="row" data-form="prom" style="margin-top:10px"><input name="testo" placeholder="Aggiungi un promemoria…" style="flex:1 1 200px" required><input name="data" type="date" title="Da quando ricordarlo (facoltativo)"><button class="small">Aggiungi</button></form></section>
+  <section class="card"><h3>Oggi, ${GIORNI[new Date().getDay()]} ${fmtDate(today())}</h3>
+   <div class="kpis"><div class="kpi"><span>Vendite</span><b>${eur(r.vendite)}</b></div><div class="kpi"><span>Contanti attesi in cassa*</span><b>${eur(r.cassa)}</b></div><div class="kpi"><span>Carta</span><b>${eur(r.pag.carta)}</b></div><div class="kpi"><span>Sul libretto</span><b>${eur(r.pag.libretto)}</b></div><div class="kpi"><span>Distributore</span><b>${eur(r.pag.distributore)}</b></div><div class="kpi"><span>Guadagno stimato</span><b>${eur(r.guadagno)}</b></div></div>
+   <p class="note">* vendite in contanti − vincite pagate in contanti + pagamenti del libretto in contanti, senza il fondo cassa.</p>
+   <h3 style="margin-top:16px">Ultimi conti</h3>${conti.length ? conti.map(g => htmlContoReg(g)).join('') : '<p class="empty">Nessuna vendita registrata oggi.</p>'}
+   ${r.mov.length ? '<p class="note"><a href="#registro">Tutto il registro →</a></p>' : ''}</section>
+ </div></div>`;
+}
+function articoliDi(rep) { return D.articoli.filter(a => a.rep === rep); }
+function formLinea() {
+ const r = REP[sel], t = lineaTmp;
+ const qta = `<label class="field">Quantità<input class="num" name="qta" inputmode="numeric" value="${esc(t.qta ?? 1)}"></label>`;
+ const imp = (lab = 'Importo') => `<label class="field">${lab}<input class="money" name="imp" inputmode="decimal" placeholder="0,00" value="${esc(t.imp ?? '')}"></label>`;
+ const add = `<button class="primary" data-act="add-linea">Aggiungi al conto</button>`;
+ let h = `<div class="row"><b style="font-size:16px">${r.ico} ${r.nome}</b></div>`;
+ if (r.tipo === 'tabacchi') {
+  h += `<div class="row"><div class="suggest-wrap"><input id="tab-cerca" placeholder="Scrivi la marca (es. Marlboro, Terea, Pueblo)…" autocomplete="off" value="${esc(t.nome || '')}"><ul class="suggest" id="tab-sugg" hidden></ul></div>${qta}${add}</div>
+  <p class="note" id="tab-info">${t.cod ? `${esc(nomeTab(t.cod))} · ${eur(prezzoTab(t.cod))} cad. · al banco: ${D.assortimento[t.cod]?.banco ?? '—'}` : 'Prima i prodotti del tuo assortimento, poi il resto del listino.'}</p>`;
+ } else if (r.tipo === 'articoli') {
+  const arts = articoliDi(sel);
+  h += `<div class="row"><label class="field" style="flex:1 1 220px">Articolo<select name="art"><option value="">— importo libero —</option>${arts.map(a => `<option value="${a.id}" ${t.art === a.id ? 'selected' : ''}>${esc(a.nome)}${a.prezzo != null ? ' · ' + eur(a.prezzo) : ' · prezzo da impostare'}</option>`).join('')}</select></label>${qta}${imp('Prezzo cad. (se libero o diverso)')}${add}</div>
+  <p class="note">Gli articoli e i prezzi si impostano in <a href="#articoli">Altri articoli</a>.</p>`;
+ } else if (r.tipo === 'gratta') {
+  const pk = D.gratta.filter(p => p.attivato && !p.chiuso);
+  h += `<div class="row"><label class="field" style="flex:1 1 240px">Biglietto<select name="gv">${pk.length ? '' : '<option value="">— nessun pacchetto attivo —</option>'}${pk.map(p => `<option value="${p.id}" ${t.gv === p.id ? 'selected' : ''}>${esc(p.nome)} · ${eur(p.prezzo)} (rimasti ${p.biglietti - vendutiGratta(p.id)})</option>`).join('')}</select></label>${qta}${add}</div>
+  ${pk.length ? '' : '<p class="note warn">Attiva un pacchetto nella pagina <a href="#gratta">Gratta e vinci</a>.</p>'}`;
+ } else if (r.tipo === 'copie') {
+  const n = D.negozio;
+  h += `<div class="row"><label class="field">Tipo<select name="tipoCopia"><option value="copia">Fotocopia B/N · ${eur(n.prezzoCopia)}</option><option value="stampa" ${t.tipoCopia === 'stampa' ? 'selected' : ''}>Stampa B/N · ${eur(n.prezzoStampa)}</option></select></label><label class="field">Pagine<input class="num" name="qta" inputmode="numeric" value="${esc(t.qta ?? 1)}"></label>${add}</div>`;
+ } else {
+  const voci = r.voci || [];
+  h += `<div class="row">${voci.length ? `<label class="field">Voce<select name="voce">${voci.map(v => `<option ${t.voce === v ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select></label>` : `<label class="field" style="flex:1 1 200px">Descrizione<input name="desc" placeholder="Cosa?" value="${esc(t.desc || '')}"></label>`}
+  ${imp(r.negativo ? 'Importo pagato' : 'Importo')}${r.tipo === 'servizi' ? `<label class="field">Commissione<input class="money" name="comm" inputmode="decimal" placeholder="0,00" value="${esc(t.comm ?? '')}"></label>` : ''}${add}</div>
+  ${r.negativo ? '<p class="note">La vincita pagata esce dalla cassa: se il cliente compra altro, il conto si riduce.</p>' : r.tipo === 'servizi' ? '<p class="note">Importo del pagamento e, a parte, la commissione incassata.</p>' : ''}`;
+ }
+ return h;
+}
+function htmlConto() {
+ const tot = conto.reduce((s, l) => s + l.imp + (l.comm || 0), 0);
+ const pg = lineaTmp.pag || 'contanti';
+ if (!conto.length) return '<p class="empty">Il conto è vuoto.</p>';
+ return `<h3>Conto</h3>${conto.map((l, i) => `<div class="conto-line"><span class="d">${REP[l.rep].ico} ${esc(l.desc)}${l.qta > 1 ? ` × ${l.qta}` : ''}${l.comm ? ` <span class="small">+ comm. ${eur(l.comm)}</span>` : ''}</span><span class="a">${eur(l.imp + (l.comm || 0))}</span><button class="small ghost" data-act="del-linea" data-i="${i}" aria-label="Togli">✕</button></div>`).join('')}
+ <div class="totale"><span>${tot < 0 ? 'Da dare al cliente' : 'Totale'}</span><strong>${eur(Math.abs(tot))}</strong></div>
+ <div class="pay">${Object.entries(PAGAMENTI).filter(([k]) => k !== 'distributore').map(([k, v]) => `<label><input type="radio" name="pag" value="${k}" ${pg === k ? 'checked' : ''}>${v}</label>`).join('')}</div>
+ <div class="row" style="margin-top:10px">${pg === 'libretto' ? `<label class="field" style="flex:1 1 220px">Cliente<input name="cliente" list="clienti-list" placeholder="Nome (nuovo o già presente)" value="${esc(lineaTmp.cliente || '')}"><datalist id="clienti-list">${D.clienti.map(c => `<option value="${esc(c.nome)}">`).join('')}</datalist></label>` : ''}
+ ${pg === 'contanti' && tot > 0 ? `<label class="field">Il cliente dà<input class="money" id="dato" inputmode="decimal" placeholder="0,00"></label><span id="resto" class="ok"></span>` : ''}
+ <label class="row small" style="gap:6px"><input type="checkbox" name="fuori" ${lineaTmp.fuori ? 'checked' : ''} style="min-height:0"> Consegnato fuori</label></div>
+ <div class="row end" style="margin-top:12px"><button class="ghost" data-act="svuota-conto">Svuota</button><button class="primary" data-act="registra-conto" style="min-width:170px">Registra il conto</button></div>`;
+}
+function leggiLinea() {
+ const box = $('#linea'), v = n => box.querySelector(`[name="${n}"]`)?.value;
+ const t = lineaTmp; for (const n of ['qta','imp','comm','art','gv','voce','desc','tipoCopia']) { const x = v(n); if (x !== undefined) t[n] = x; }
+}
+function aggiungiLinea() {
+ leggiLinea();
+ const r = REP[sel], t = lineaTmp, qta = Math.max(1, int(t.qta) || 1);
+ let l;
+ if (r.tipo === 'tabacchi') {
+  if (!t.cod) { toast('Scegli prima il prodotto dall’elenco.'); $('#tab-cerca')?.focus(); return; }
+  l = {rep:sel, cod:t.cod, qta, prezzoU:prezzoTab(t.cod), desc:nomeTab(t.cod)};
+ } else if (r.tipo === 'articoli') {
+  const a = D.articoli.find(x => x.id === t.art), pu = cents(t.imp) ?? a?.prezzo;
+  if (pu == null || pu <= 0) { toast(a ? 'Questo articolo non ha ancora un prezzo: scrivilo nel campo.' : 'Scegli un articolo o scrivi il prezzo.'); return; }
+  l = {rep:sel, art:a?.id, qta, prezzoU:pu, desc:a ? a.nome : r.nome};
+ } else if (r.tipo === 'gratta') {
+  const p = D.gratta.find(x => x.id === t.gv); if (!p) { toast('Nessun pacchetto attivo.'); return; }
+  l = {rep:sel, gv:p.id, qta, prezzoU:p.prezzo, desc:'Gratta e vinci ' + p.nome};
+ } else if (r.tipo === 'copie') {
+  const st = t.tipoCopia === 'stampa'; l = {rep:sel, qta, prezzoU:st ? D.negozio.prezzoStampa : D.negozio.prezzoCopia, desc:st ? 'Stampe B/N' : 'Fotocopie B/N'};
+ } else {
+  const imp = cents(t.imp); if (imp == null || imp <= 0) { toast('Scrivi l’importo.'); box('imp'); return; }
+  l = {rep:sel, qta:1, prezzoU:r.negativo ? -imp : imp, desc:(r.voci ? (r.negativo ? 'Vincita ' : r.id === 'ricariche' ? 'Ricarica ' : '') + (t.voce || r.voci[0]) : (t.desc || r.nome)).trim()};
+  if (r.tipo === 'servizi') l.comm = Math.max(0, cents(t.comm) || 0);
+ }
+ l.imp = l.prezzoU * l.qta; conto.push(l);
+ lineaTmp = {pag:t.pag, cliente:t.cliente, fuori:t.fuori};
+ render();
+ function box(n) { $(`#linea [name="${n}"]`)?.focus(); }
+}
+function registraConto() {
+ if (!conto.length) return;
+ const pg = lineaTmp.pag || 'contanti', tot = conto.reduce((s, l) => s + l.imp + (l.comm || 0), 0);
+ let cli = null;
+ if (pg === 'libretto') {
+  const nome = ($('.conto [name=cliente]')?.value ?? lineaTmp.cliente ?? '').trim(); if (!nome) { toast('Scrivi il nome del cliente.'); return; }
+  let c = D.clienti.find(x => norm(x.nome) === norm(nome)); if (!c) { c = {id:uid(), nome, tel:'', note:''}; D.clienti.push(c); }
+  cli = c.id;
+ }
+ const cid = registraMovimenti(conto, {pag:pg, cli, fuori:!!lineaTmp.fuori});
+ if (cli) D.libretto.push({id:uid(), t:new Date().toISOString(), cli, conto:cid, imp:tot, desc:conto.map(l => l.desc + (l.qta > 1 ? ' ×' + l.qta : '')).join(', ')});
+ save(); toast('Conto registrato: ' + eur(tot)); conto = []; lineaTmp = {}; render();
+}
+function registraMovimenti(linee, {pag, cli = null, fuori = false, da = 'banco', t = new Date().toISOString()}) {
+ const cid = uid();
+ for (const l of linee) {
+  const m = Object.assign({id:uid(), t, conto:cid, pag, cli, fuori, da}, l); D.movimenti.push(m);
+  if (m.cod && D.assortimento[m.cod]) D.assortimento[m.cod][da === 'distributore' ? 'distr' : 'banco'] -= m.qta;
+  if (m.art) { const a = D.articoli.find(x => x.id === m.art); if (a) a.scorta -= m.qta; }
+ }
+ return cid;
+}
+function stornaConto(cid) {
+ const ms = D.movimenti.filter(m => m.conto === cid); if (!ms.length) return;
+ if (!confirm('Annullare questo conto? Le scorte tornano come prima.')) return;
+ for (const m of ms) {
+  if (m.cod && D.assortimento[m.cod]) D.assortimento[m.cod][m.da === 'distributore' ? 'distr' : 'banco'] += m.qta;
+  if (m.art) { const a = D.articoli.find(x => x.id === m.art); if (a) a.scorta += m.qta; }
+ }
+ D.movimenti = D.movimenti.filter(m => m.conto !== cid);
+ D.libretto = D.libretto.filter(x => x.conto !== cid);
+ save(); toast('Conto annullato.'); render();
+}
+function gruppiConti(mov) {
+ const g = new Map(); for (const m of mov) { if (!g.has(m.conto)) g.set(m.conto, []); g.get(m.conto).push(m); }
+ return [...g.values()].sort((a, b) => b[0].t.localeCompare(a[0].t));
+}
+function htmlContoReg(ms, conData) {
+ const m0 = ms[0], tot = ms.reduce((s, m) => s + m.imp + (m.comm || 0), 0);
+ return `<div class="conto-reg"><div class="h">${conData ? fmtDate(dayKey(m0.t)) + ' ' : ''}${fmtTime(m0.t)} · <span class="tag ${m0.pag === 'libretto' ? 'amber' : m0.pag === 'distributore' ? 'green' : ''}">${PAGAMENTI[m0.pag]}${m0.cli ? ': ' + esc(nomeCliente(m0.cli)) : ''}</span>${m0.fuori ? ' <span class="tag">consegnato fuori</span>' : ''}<span class="spacer"></span><b>${eur(tot)}</b><button class="small ghost" data-act="storna" data-id="${m0.conto}" title="Annulla il conto">Annulla</button></div>
+ <ul>${ms.map(m => `<li>${esc(m.desc)}${m.qta > 1 ? ' × ' + m.qta : ''} · ${eur(m.imp + (m.comm || 0))}</li>`).join('')}</ul></div>`;
+}
+afterRender.oggi = () => {
+ const inp = $('#tab-cerca'); if (inp) attachSuggest(inp, $('#tab-sugg'), q => {
+  const t = norm(q).trim(), mio = Object.keys(D.assortimento).filter(c => !t || norm(nomeTab(c)).includes(t)).map(c => ({cod:c, nome:nomeTab(c), info:`${eur(prezzoTab(c))} · banco ${D.assortimento[c].banco}`}));
+  mio.sort((a, b) => (norm(b.nome).startsWith(t) - norm(a.nome).startsWith(t)) || a.nome.localeCompare(b.nome));
+  const altri = t.length >= 2 ? cercaListino(q, null, 25).filter(p => !D.assortimento[p.cod]).map(p => ({cod:p.cod, nome:p.nome, info:`${eur(p.prezzo)} · ${p.breve}, non in assortimento`})) : [];
+  return mio.slice(0, 15).concat(altri);
+ }, it => { lineaTmp.cod = it.cod; lineaTmp.nome = it.nome; leggiLinea(); render(); setTimeout(() => $('#linea [name=qta]')?.select(), 0); });
+ const dato = $('#dato'); if (dato) dato.addEventListener('input', () => { const tot = conto.reduce((s, l) => s + l.imp + (l.comm || 0), 0), d = cents(dato.value); $('#resto').textContent = d == null ? '' : d >= tot ? 'Resto: ' + eur(d - tot) : 'Mancano ' + eur(tot - d); });
+ if (sel !== 'tabacchi') $('#linea [name=imp], #linea [name=art], #linea [name=gv]')?.focus?.();
+ else if (!lineaTmp.cod) inp?.focus();
+};
+function attachSuggest(inp, ul, source, pick) {
+ let items = [], act = -1;
+ const show = () => { items = source(inp.value); act = items.length ? 0 : -1; ul.hidden = !items.length; ul.innerHTML = items.map((it, i) => `<li data-i="${i}" class="${i === act ? 'active' : ''}"><span>${esc(it.nome)}</span><small>${esc(it.info || '')}</small></li>`).join(''); };
+ inp.addEventListener('input', show); inp.addEventListener('focus', show);
+ inp.addEventListener('blur', () => setTimeout(() => ul.hidden = true, 150));
+ inp.addEventListener('keydown', e => {
+  if (ul.hidden) return;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); act = (act + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length; [...ul.children].forEach((li, i) => li.classList.toggle('active', i === act)); ul.children[act]?.scrollIntoView({block:'nearest'}); }
+  else if (e.key === 'Enter' && act >= 0) { e.preventDefault(); ul.hidden = true; pick(items[act]); }
+  else if (e.key === 'Escape') ul.hidden = true;
+ });
+ ul.addEventListener('mousedown', e => { const li = e.target.closest('li'); if (li) { e.preventDefault(); ul.hidden = true; pick(items[+li.dataset.i]); } });
+}
+
+/* ============ Pagina: Tabacchi ============ */
+let filtroTab = '', cercaTab = {q:'', cat:''};
+function pTabacchi() {
+ const cods = Object.keys(D.assortimento).filter(c => !filtroTab || norm(nomeTab(c)).includes(norm(filtroTab))).sort((a, b) => (D.assortimento[a].cat || '').localeCompare(D.assortimento[b].cat || '') || nomeTab(a).localeCompare(nomeTab(b)));
+ const tot = Object.keys(D.assortimento), valore = tot.reduce((s, c) => s + prezzoTab(c) * Math.max(0, D.assortimento[c].banco + D.assortimento[c].distr), 0);
+ const ris = cercaListino(cercaTab.q, cercaTab.cat, 60);
+ return `<h2>Tabacchi</h2><p class="intro">Il tuo assortimento con le scorte al banco e nel distributore 24 ore. <b>Minimo</b>: sotto questo numero il prodotto va riordinato. <b>Obiettivo</b>: quanti pezzi vuoi avere dopo la consegna. <b>Multiplo</b>: come si ordina (10 = a stecche).</p>
+ <div class="stack">
+ <section class="card"><div class="row"><h3 style="margin:0">Il mio assortimento</h3><span class="tag">${tot.length} prodotti</span><span class="tag green">valore in negozio ${eur(valore)}</span><span class="spacer"></span><input placeholder="Filtra…" id="filtro-tab" value="${esc(filtroTab)}"><button data-act="conta-distr" ${tot.length ? '' : 'disabled'}>Conta il distributore</button><button data-act="ricarica-distr" ${tot.length ? '' : 'disabled'}>Ricarica il distributore</button></div>
+ ${tot.length ? `<div class="table-wrap"><table style="margin-top:10px"><thead><tr><th>Prodotto</th><th class="n">Prezzo</th><th class="n">Al banco</th><th class="n">Distributore</th><th class="n">Minimo</th><th class="n">Obiettivo</th><th class="n">Multiplo</th><th class="n" title="Media delle ultime 4 settimane">Venduti/sett.</th><th></th></tr></thead><tbody>
+ ${cods.map(c => { const a = D.assortimento[c], p = prodotto(c), low = a.minimo > 0 && a.banco + a.distr < a.minimo;
+  return `<tr class="${low ? 'low' : ''}"><td><b>${esc(nomeTab(c))}</b><br><span class="small">${esc(CAT_BREVE[a.cat] || a.cat || '')} · ${esc(p?.conf || '')} · cod. ${c}</span>${p ? '' : ' <span class="tag red">non più in listino</span>'}${low ? ' <span class="tag red">sotto il minimo</span>' : ''}</td>
+  <td class="n">${eur(prezzoTab(c))}</td>${['banco','distr','minimo','obiettivo','multiplo'].map(f => `<td class="n"><input class="num" inputmode="numeric" data-tab="${c}" data-f="${f}" value="${a[f]}"></td>`).join('')}
+  <td class="n">${(venditeTabacco(c) / 4).toLocaleString('it-IT', {maximumFractionDigits:1})}</td><td><button class="small ghost" data-act="rimuovi-tab" data-id="${c}" title="Togli dall’assortimento">✕</button></td></tr>`; }).join('')}
+ </tbody></table></div>` : '<p class="empty">Ancora vuoto: cerca qui sotto le marche che tieni e premi «Aggiungi».</p>'}</section>
+ <section class="card"><h3>Cerca nel listino ufficiale</h3><div class="row"><input id="cerca-listino" placeholder="Nome o codice (es. Marlboro Gold, Terea, Golden Virginia)" style="flex:1 1 320px" value="${esc(cercaTab.q)}"><select id="cerca-cat"><option value="">Tutte le categorie</option>${LISTINO.categorie.map(c => `<option value="${esc(c)}" ${cercaTab.cat === c ? 'selected' : ''}>${esc(CAT_BREVE[c] || c)}</option>`).join('')}</select></div>
+ <div id="ris-listino">${htmlRisListino(ris)}</div>
+ <p class="note">Listino in vigore dal ${esc(LISTINO.vigore.toLowerCase())} · ${esc(LISTINO.aggiornato)} · ${byCode.size.toLocaleString('it-IT')} prodotti. <button class="small" data-act="dlg-listino">Aggiorna il listino da file…</button></p></section>
+ </div>`;
+}
+function htmlRisListino(ris) {
+ if (!cercaTab.q && !cercaTab.cat) return '<p class="note">Scrivi almeno una parola del nome.</p>';
+ if (!ris.length) return '<p class="empty">Nessun prodotto trovato.</p>';
+ return `<div class="table-wrap"><table style="margin-top:8px"><thead><tr><th>Prodotto</th><th>Categoria</th><th>Confezione</th><th class="n">Prezzo</th><th></th></tr></thead><tbody>${ris.map(p => `<tr><td><b>${esc(p.nome)}</b> <span class="small">cod. ${p.cod}</span></td><td>${esc(p.breve)}</td><td>${esc(p.conf)}</td><td class="n">${eur(p.prezzo)}</td><td>${D.assortimento[p.cod] ? '<span class="tag green">nel tuo assortimento</span>' : `<button class="small primary" data-act="aggiungi-tab" data-id="${p.cod}">Aggiungi</button>`}</td></tr>`).join('')}</tbody></table></div>${ris.length >= 60 ? '<p class="note">Mostro i primi 60: aggiungi parole per restringere.</p>' : ''}`;
+}
+afterRender.tabacchi = () => {
+ const q = $('#cerca-listino'), c = $('#cerca-cat'), upd = () => { cercaTab = {q:q.value, cat:c.value}; $('#ris-listino').innerHTML = htmlRisListino(cercaListino(cercaTab.q, cercaTab.cat, 60)); };
+ q.addEventListener('input', upd); c.addEventListener('change', upd);
+ const f = $('#filtro-tab'); f?.addEventListener('change', () => { filtroTab = f.value; render(); });
+};
+function dlgDistributore(modo) {
+ const cods = Object.keys(D.assortimento).sort((a, b) => nomeTab(a).localeCompare(nomeTab(b)));
+ const conta = modo === 'conta';
+ openDlg(conta ? 'Conta il distributore 24 ore' : 'Ricarica il distributore dal banco', `<p class="intro">${conta ? 'Scrivi quanti pezzi sono rimasti nel distributore. La differenza viene registrata come venduta dal distributore (pagamento «Distributore 24h»).' : 'Scrivi quanti pezzi metti nel distributore: si tolgono dal banco.'}</p>
+ <form data-form="${conta ? 'conta-distr' : 'ricarica-distr'}"><div class="table-wrap"><table><thead><tr><th>Prodotto</th><th class="n">Al banco</th><th class="n">Nel distributore</th><th class="n">${conta ? 'Rimasti ora' : 'Metto dentro'}</th></tr></thead><tbody>
+ ${cods.map(c => { const a = D.assortimento[c]; return `<tr><td>${esc(nomeTab(c))}</td><td class="n">${a.banco}</td><td class="n">${a.distr}</td><td class="n"><input class="num" inputmode="numeric" name="c_${c}" placeholder="${conta ? a.distr : '0'}"></td></tr>`; }).join('')}
+ </tbody></table></div>${conta ? '<label class="field" style="margin-top:10px">Data delle vendite<input type="date" name="__data" value="' + today() + '"></label>' : ''}<div class="row end" style="margin-top:14px"><button type="button" class="ghost" data-act="dlg-close">Annulla</button><button class="primary">${conta ? 'Registra le vendite' : 'Sposta nel distributore'}</button></div></form>`);
+}
+
+/* ============ Pagina: Ordine settimanale ============ */
+function pOrdine() {
+ const o = ordineAperto(), n = D.negozio, storici = D.ordini.filter(x => x.stato === 'ricevuto').sort((a, b) => b.ricevuto.localeCompare(a.ricevuto)).slice(0, 8);
+ let h = `<h2>Ordine settimanale</h2><p class="intro">L’ordine si prepara di ${GIORNI[n.giornoOrdine]} e la consegna arriva di ${GIORNI[n.giornoConsegna]} (si cambia in Impostazioni). La proposta porta ogni prodotto al suo <b>obiettivo</b>, arrotondando al multiplo (le stecche); se l’obiettivo è vuoto, porta al minimo solo ciò che ci è sceso sotto.</p>`;
+ if (!o) {
+  const cods = Object.keys(D.assortimento), prop = cods.filter(c => proposta(c) > 0);
+  h += `<section class="card"><div class="row"><h3 style="margin:0">Nessun ordine in preparazione</h3><span class="spacer"></span><button class="primary" data-act="nuovo-ordine" ${cods.length ? '' : 'disabled'}>Prepara l’ordine (${prop.length} prodotti proposti)</button></div>${cods.length ? '' : '<p class="note">Prima aggiungi i prodotti in <a href="#tabacchi">Tabacchi</a>.</p>'}</section>`;
+ } else {
+  const righe = o.righe, tot = righe.reduce((s, r) => s + r.qta * prezzoTab(r.cod), 0), pezzi = righe.reduce((s, r) => s + r.qta, 0);
+  const altri = Object.keys(D.assortimento).filter(c => !righe.some(r => r.cod === c)).sort((a, b) => nomeTab(a).localeCompare(nomeTab(b)));
+  const ric = o.stato === 'inviato';
+  h += `<section class="card"><div class="row"><h3 style="margin:0">${ric ? `Ordine inviato il ${fmtDate(o.inviato)}` : `Ordine in preparazione · ${fmtDate(o.creato)}`}</h3><span class="tag ${ric ? 'amber' : ''}">${ric ? 'in attesa di consegna' : 'bozza'}</span><span class="spacer"></span>
+   <button data-act="stampa">Stampa</button><button data-act="copia-ordine">Copia come testo</button>${ric ? '' : '<button class="ghost" data-act="ricalcola-ordine">Ricalcola la proposta</button><button class="danger" data-act="elimina-ordine">Elimina</button>'}</div>
+  <div class="print-only"><h2>${esc(n.nome)} · ordine tabacchi del ${fmtDate(o.inviato || today())}</h2></div>
+  <div class="table-wrap"><table style="margin-top:10px"><thead><tr><th>Codice</th><th>Prodotto</th><th class="n">In negozio</th><th class="n">Obiettivo</th><th class="n">${ric ? 'Ordinati' : 'Da ordinare'}</th>${ric ? '<th class="n no-print">Arrivati</th>' : ''}<th class="n">Valore</th><th class="no-print"></th></tr></thead><tbody>
+  ${righe.map((r, i) => { const a = D.assortimento[r.cod]; return `<tr><td>${r.cod}</td><td>${esc(nomeTab(r.cod))}</td><td class="n">${a ? a.banco + a.distr : '—'}</td><td class="n">${a?.obiettivo || '—'}</td><td class="n">${ric ? r.qta : `<input class="num" inputmode="numeric" data-ord="${i}" value="${r.qta}">`}</td>${ric ? `<td class="n no-print"><input class="num" inputmode="numeric" data-arr="${i}" value="${r.arrivati ?? r.qta}"></td>` : ''}<td class="n">${eur(r.qta * prezzoTab(r.cod))}</td><td class="no-print">${ric ? '' : `<button class="small ghost" data-act="del-riga" data-i="${i}">✕</button>`}</td></tr>`; }).join('')}
+  </tbody><tfoot><tr><td></td><td><b>Totale</b></td><td></td><td></td><td class="n"><b>${pezzi}</b></td>${ric ? '<td class="no-print"></td>' : ''}<td class="n"><b>${eur(tot)}</b></td><td class="no-print"></td></tr></tfoot></table></div>
+  <p class="note">Il valore è a prezzo di vendita al pubblico; il costo per te è al netto del tuo aggio.</p>
+  ${ric ? `<div class="row end no-print" style="margin-top:12px"><label class="field">Arrivato il<input type="date" id="data-arrivo" value="${today()}"></label><button class="primary" data-act="ricevi-ordine">Registra la consegna (aggiunge al banco)</button></div>`
+   : `<div class="row no-print" style="margin-top:12px"><select id="agg-riga"><option value="">Aggiungi un prodotto all’ordine…</option>${altri.map(c => `<option value="${c}">${esc(nomeTab(c))}</option>`).join('')}</select><span class="spacer"></span><button class="primary" data-act="invia-ordine" ${righe.length ? '' : 'disabled'}>Segna come inviato</button></div>`}</section>`;
+ }
+ h += `<section class="card no-print" style="margin-top:18px"><h3>Consegne ricevute</h3>${storici.length ? `<table><thead><tr><th>Inviato</th><th>Arrivato</th><th class="n">Pezzi</th><th class="n">Valore</th></tr></thead><tbody>${storici.map(x => `<tr><td>${fmtDate(x.inviato)}</td><td>${fmtDate(x.ricevuto)}</td><td class="n">${x.righe.reduce((s, r) => s + (r.arrivati ?? r.qta), 0)}</td><td class="n">${eur(x.righe.reduce((s, r) => s + (r.arrivati ?? r.qta) * (r.prezzo ?? prezzoTab(r.cod)), 0))}</td></tr>`).join('')}</tbody></table>` : '<p class="empty">Ancora nessuna.</p>'}</section>`;
+ return h;
+}
+function righeProposte() { return Object.keys(D.assortimento).map(c => ({cod:c, qta:proposta(c)})).filter(r => r.qta > 0).sort((a, b) => nomeTab(a.cod).localeCompare(nomeTab(b.cod))); }
+afterRender.ordine = () => { $('#agg-riga')?.addEventListener('change', e => { const c = e.target.value; if (!c) return; const a = D.assortimento[c]; ordineAperto().righe.push({cod:c, qta:Math.max(1, a.multiplo || 1)}); save(); render(); }); };
+function testoOrdine(o) { return `${D.negozio.nome} · ordine tabacchi del ${fmtDate(o.inviato || today())}\n` + o.righe.map(r => `${r.cod}\t${nomeTab(r.cod)}\t${r.qta}`).join('\n') + `\nTotale pezzi: ${o.righe.reduce((s, r) => s + r.qta, 0)}`; }
+
+/* ============ Pagina: Altri articoli ============ */
+function pArticoli() {
+ const val = D.articoli.reduce((s, a) => s + (a.prezzo || 0) * Math.max(0, a.scorta), 0), sm = sottoMinimoArt();
+ return `<h2>Altri articoli</h2><p class="intro">Batterie, sale, cancelleria, patatine, caramelle, cartoline… Imposta prezzo di vendita e, se vuoi, il costo d’acquisto: così il registro stima il guadagno. Le vendite in cassa scalano la scorta.</p>
+ <div class="stack"><section class="card"><div class="row"><h3 style="margin:0">Articoli</h3><span class="tag">${D.articoli.length}</span><span class="tag green">valore in negozio ${eur(val)}</span><span class="spacer"></span>${sm.length ? '<button data-act="stampa">Stampa la lista da riordinare</button>' : ''}</div>
+ <div class="print-only"><h2>${esc(D.negozio.nome)} · articoli da riordinare · ${fmtDate(today())}</h2><ul>${sm.map(a => `<li>${esc(a.nome)}: ne restano ${a.scorta}, minimo ${a.minimo}</li>`).join('')}</ul></div>
+ <div class="table-wrap no-print"><table style="margin-top:10px"><thead><tr><th>Articolo</th><th>Reparto</th><th class="n">Prezzo</th><th class="n">Costo</th><th class="n">Scorta</th><th class="n">Minimo</th><th></th></tr></thead><tbody>
+ ${REP_ARTICOLI.map(r => D.articoli.filter(a => a.rep === r.id).map(a => `<tr class="${a.minimo > 0 && a.scorta < a.minimo ? 'low' : ''}"><td><input data-art="${a.id}" data-f="nome" value="${esc(a.nome)}" style="width:100%;min-width:180px"></td><td><select data-art="${a.id}" data-f="rep">${REP_ARTICOLI.map(x => `<option value="${x.id}" ${x.id === a.rep ? 'selected' : ''}>${x.nome}</option>`).join('')}</select></td>
+ <td class="n"><input class="money" inputmode="decimal" data-art="${a.id}" data-f="prezzo" value="${euroIn(a.prezzo)}" placeholder="da impostare"></td><td class="n"><input class="money" inputmode="decimal" data-art="${a.id}" data-f="costo" value="${euroIn(a.costo)}" placeholder="—"></td>
+ <td class="n"><input class="num" inputmode="numeric" data-art="${a.id}" data-f="scorta" value="${a.scorta}"></td><td class="n"><input class="num" inputmode="numeric" data-art="${a.id}" data-f="minimo" value="${a.minimo}"></td><td><button class="small ghost" data-act="del-art" data-id="${a.id}">✕</button></td></tr>`).join('')).join('')}
+ </tbody></table></div>
+ <form class="row no-print" data-form="nuovo-art" style="margin-top:14px"><input name="nome" placeholder="Nuovo articolo (es. Pila 9V)" required style="flex:1 1 220px"><select name="rep">${REP_ARTICOLI.map(x => `<option value="${x.id}">${x.nome}</option>`).join('')}</select><input class="money" name="prezzo" inputmode="decimal" placeholder="Prezzo"><input class="num" name="scorta" inputmode="numeric" placeholder="Scorta"><button class="primary">Aggiungi</button></form>
+ <p class="note no-print">Quando arriva merce, aumenta la scorta scrivendo il nuovo totale.</p></section></div>`;
+}
+
+/* ============ Pagina: Gratta e vinci ============ */
+function pGratta() {
+ const att = D.gratta.filter(p => !p.chiuso).sort((a, b) => (b.ricevuto || '').localeCompare(a.ricevuto || '')), chiusi = D.gratta.filter(p => p.chiuso).slice(-10).reverse();
+ const da30 = addDays(today(), -29), v30 = D.movimenti.filter(m => m.rep === 'gratta' && dayKey(m.t) >= da30).reduce((s, m) => s + m.imp, 0), w30 = D.movimenti.filter(m => m.rep === 'vincite' && dayKey(m.t) >= da30).reduce((s, m) => s - m.imp, 0);
+ return `<h2>Gratta e vinci</h2><p class="intro">Registra i pacchetti quando arrivano e attivali quando li metti in vendita. In cassa vendi i biglietti dei pacchetti attivi: i rimasti si contano da soli.</p>
+ <div class="grid2"><section class="card"><h3>Pacchetti</h3>${att.length ? `<div class="table-wrap"><table><thead><tr><th>Biglietto</th><th class="n">Prezzo</th><th class="n">Venduti</th><th class="n">Rimasti</th><th>Ricevuto</th><th>Stato</th><th></th></tr></thead><tbody>
+ ${att.map(p => { const v = vendutiGratta(p.id), r = p.biglietti - v; return `<tr><td><b>${esc(p.nome)}</b>${p.lotto ? `<br><span class="small">pacchetto ${esc(p.lotto)}</span>` : ''}</td><td class="n">${eur(p.prezzo)}</td><td class="n">${v}</td><td class="n">${r} / ${p.biglietti}</td><td>${fmtDate(p.ricevuto)}</td><td>${p.attivato ? `<span class="tag green">attivo dal ${fmtDate(p.attivato)}</span>` : `<button class="small primary" data-act="attiva-gv" data-id="${p.id}">Attiva oggi</button>`}</td><td><button class="small ghost" data-act="chiudi-gv" data-id="${p.id}" title="Pacchetto finito o reso">Chiudi</button></td></tr>`; }).join('')}
+ </tbody></table></div>` : '<p class="empty">Nessun pacchetto in negozio.</p>'}
+ ${chiusi.length ? `<h3 style="margin-top:18px">Ultimi chiusi</h3><table><tbody>${chiusi.map(p => `<tr class="muted"><td>${esc(p.nome)}</td><td class="n">${eur(p.prezzo)}</td><td class="n">venduti ${vendutiGratta(p.id)} / ${p.biglietti}</td><td>${fmtDate(p.chiuso)}</td><td><button class="small ghost" data-act="riapri-gv" data-id="${p.id}">Riapri</button></td></tr>`).join('')}</tbody></table>` : ''}</section>
+ <div class="stack"><section class="card"><h3>Nuovo pacchetto</h3><form data-form="nuovo-gv" class="stack" style="gap:10px"><label class="field">Nome del biglietto<input name="nome" required placeholder="es. Il Miliardario, Turista per sempre…"></label>
+ <div class="row"><label class="field">Prezzo biglietto<input class="money" name="prezzo" inputmode="decimal" required placeholder="5,00"></label><label class="field">Biglietti nel pacchetto<input class="num" name="biglietti" inputmode="numeric" required></label><label class="field">N. pacchetto (facolt.)<input name="lotto" style="width:130px"></label></div>
+ <div class="row"><label class="field">Ricevuto il<input type="date" name="ricevuto" value="${today()}"></label><label class="row small" style="gap:6px"><input type="checkbox" name="attiva" checked style="min-height:0"> già attivato oggi</label></div><div class="row end"><button class="primary">Aggiungi pacchetto</button></div></form></section>
+ <section class="card"><h3>Ultimi 30 giorni</h3><div class="kpis"><div class="kpi"><span>Biglietti venduti</span><b>${eur(v30)}</b></div><div class="kpi"><span>Vincite pagate</span><b>${eur(w30)}</b></div><div class="kpi"><span>Aggio stimato (${D.negozio.aggi.gratta}%)</span><b>${eur(Math.round(v30 * D.negozio.aggi.gratta / 100))}</b></div></div></section></div></div>`;
+}
+
+/* ============ Pagina: Libretto crediti ============ */
+function pLibretto() {
+ const cl = D.clienti.map(c => ({...c, saldo:saldoCliente(c.id), ultimo:D.libretto.filter(x => x.cli === c.id).map(x => x.t).sort().pop()})).sort((a, b) => b.saldo - a.saldo || a.nome.localeCompare(b.nome));
+ const tot = cl.reduce((s, c) => s + Math.max(0, c.saldo), 0);
+ return `<h2>Libretto crediti</h2><p class="intro">Chi «segna» e paga dopo. Le vendite registrate in cassa con «Sul libretto» finiscono qui da sole; qui registri i pagamenti.</p>
+ <div class="grid2"><section class="card"><div class="row"><h3 style="margin:0">Clienti</h3><span class="tag amber">da incassare ${eur(tot)}</span></div>
+ ${cl.length ? `<table style="margin-top:10px"><thead><tr><th>Cliente</th><th>Ultimo movimento</th><th class="n">Deve</th><th></th></tr></thead><tbody>${cl.map(c => `<tr class="${c.saldo > 0 ? '' : 'muted'}"><td><b>${esc(c.nome)}</b>${c.tel ? `<br><span class="small">${esc(c.tel)}</span>` : ''}</td><td>${c.ultimo ? fmtDate(dayKey(c.ultimo)) : '—'}</td><td class="n"><b>${eur(c.saldo)}</b></td><td><button class="small" data-act="cliente" data-id="${c.id}">Apri</button></td></tr>`).join('')}</tbody></table>` : '<p class="empty">Nessun cliente.</p>'}</section>
+ <section class="card"><h3>Nuovo cliente</h3><form data-form="nuovo-cli" class="stack" style="gap:10px"><label class="field">Nome<input name="nome" required></label><label class="field">Telefono (facolt.)<input name="tel" inputmode="tel"></label><label class="field">Note<input name="note" placeholder="es. paga a fine mese"></label><div class="row end"><button class="primary">Aggiungi</button></div></form></section></div>`;
+}
+function dlgCliente(id) {
+ const c = D.clienti.find(x => x.id === id); if (!c) return;
+ const mov = D.libretto.filter(x => x.cli === id).sort((a, b) => b.t.localeCompare(a.t)), s = saldoCliente(id);
+ openDlg(c.nome, `<div class="kpis"><div class="kpi"><span>Deve in tutto</span><b>${eur(s)}</b></div></div>
+ <form data-form="pag-cli" data-id="${id}" class="row" style="margin-top:14px"><label class="field">Paga<input class="money" name="imp" inputmode="decimal" required value="${s > 0 ? euroIn(s) : ''}"></label><label class="field">Come<select name="via"><option value="contanti">Contanti</option><option value="carta">Carta</option></select></label><button class="primary">Registra il pagamento</button></form>
+ <form data-form="deb-cli" data-id="${id}" class="row" style="margin-top:10px"><label class="field" style="flex:1 1 200px">Aggiungi un debito a mano<input name="desc" placeholder="es. debito del quaderno vecchio"></label><label class="field">Importo<input class="money" name="imp" inputmode="decimal" required></label><button>Aggiungi</button></form>
+ <h3 style="margin-top:18px">Movimenti</h3>${mov.length ? `<table><tbody>${mov.map(x => `<tr><td>${fmtDate(dayKey(x.t))} ${fmtTime(x.t)}</td><td>${esc(x.desc || (x.imp < 0 ? 'Pagamento' + (x.via === 'carta' ? ' con carta' : ' in contanti') : ''))}</td><td class="n ${x.imp < 0 ? 'ok' : ''}">${x.imp < 0 ? '− ' + eur(-x.imp) : eur(x.imp)}</td><td><button class="small ghost" data-act="del-lib" data-id="${x.id}" data-cli="${id}" title="Elimina la riga">✕</button></td></tr>`).join('')}</tbody></table>` : '<p class="empty">Nessun movimento.</p>'}
+ <h3 style="margin-top:18px">Dati</h3><form data-form="mod-cli" data-id="${id}" class="row"><input name="nome" value="${esc(c.nome)}" required><input name="tel" value="${esc(c.tel)}" placeholder="Telefono"><input name="note" value="${esc(c.note)}" placeholder="Note" style="flex:1"><button>Salva</button>${s === 0 ? `<button type="button" class="danger" data-act="del-cli" data-id="${id}">Elimina cliente</button>` : ''}</form>
+ ${c.tel && s > 0 ? `<p class="note"><a href="https://wa.me/${esc(c.tel.replace(/\D/g, '').replace(/^(?!39)/, '39'))}?text=${encodeURIComponent(`Ciao ${c.nome}, ti ricordo il conto in tabaccheria: ${eur(s)}. Grazie!`)}" target="_blank" rel="noopener">Manda un promemoria su WhatsApp</a></p>` : ''}`);
+}
+
+/* ============ Pagina: Registro e conti ============ */
+let periodo = {tipo:'oggi', da:today(), a:today()};
+function calcPeriodo() {
+ const k = today(), p = periodo;
+ if (p.tipo === 'oggi') return [k, k];
+ if (p.tipo === 'ieri') return [addDays(k, -1), addDays(k, -1)];
+ if (p.tipo === 'settimana') return [inizioSettimana(k), k];
+ if (p.tipo === 'mese') return [k.slice(0, 8) + '01', k];
+ if (p.tipo === 'mesescorso') { const d = new Date(k.slice(0, 8) + '01T12:00:00'); d.setDate(0); const f = dayKey(d); return [f.slice(0, 8) + '01', f]; }
+ if (p.tipo === 'anno') return [k.slice(0, 4) + '-01-01', k];
+ return [p.da || k, p.a || k];
+}
+function pRegistro() {
+ const [da, a] = calcPeriodo(), r = riepilogo(da, a), conti = gruppiConti(r.mov);
+ const tipi = [['oggi','Oggi'],['ieri','Ieri'],['settimana','Questa settimana'],['mese','Questo mese'],['mesescorso','Mese scorso'],['anno','Quest’anno'],['libero','Scegli le date']];
+ const top = Object.entries(D.movimenti.filter(m => m.cod && dayKey(m.t) >= da && dayKey(m.t) <= a).reduce((o, m) => (o[m.cod] = (o[m.cod] || 0) + m.qta, o), {})).sort((x, y) => y[1] - x[1]).slice(0, 10);
+ return `<h2>Registro e conti</h2><p class="intro">Quanto è entrato, da dove, e una stima del guadagno con gli aggi impostati in Impostazioni.</p>
+ <section class="card"><div class="row">${tipi.map(([k, l]) => `<button class="small ${periodo.tipo === k ? 'primary' : ''}" data-act="periodo" data-id="${k}">${l}</button>`).join('')}${periodo.tipo === 'libero' ? `<input type="date" id="p-da" value="${da}"><input type="date" id="p-a" value="${a}">` : ''}<span class="spacer"></span><button class="small" data-act="csv">Esporta in Excel (CSV)</button></div>
+ <p class="note">Dal ${fmtDate(da)} al ${fmtDate(a)}</p>
+ <div class="kpis" style="margin-top:10px"><div class="kpi"><span>Vendite</span><b>${eur(r.vendite)}</b></div><div class="kpi"><span>Contanti (netto vincite)</span><b>${eur(r.pag.contanti)}</b></div><div class="kpi"><span>Carta</span><b>${eur(r.pag.carta)}</b></div><div class="kpi"><span>Segnato sul libretto</span><b>${eur(r.pag.libretto)}</b></div><div class="kpi"><span>Distributore 24h</span><b>${eur(r.pag.distributore)}</b></div><div class="kpi"><span>Vincite pagate</span><b>${eur(r.vincite)}</b></div><div class="kpi"><span>Incassato dal libretto</span><b>${eur(r.rientri.contanti + r.rientri.carta)}</b></div><div class="kpi"><span>Contanti attesi</span><b>${eur(r.cassa)}</b></div><div class="kpi"><span>Guadagno stimato${r.guadagnoParziale ? '*' : ''}</span><b>${eur(r.guadagno)}</b></div></div>
+ ${r.guadagnoParziale ? '<p class="note">* manca il costo d’acquisto di qualche articolo: imposta i costi in Altri articoli per una stima completa.</p>' : ''}</section>
+ <div class="grid2" style="margin-top:18px"><section class="card"><h3>Per reparto</h3><table><thead><tr><th>Reparto</th><th class="n">Pezzi</th><th class="n">Importo</th><th class="n">Guadagno stimato</th></tr></thead><tbody>${REPARTI.filter(x => r.rep[x.id]).map(x => `<tr><td>${x.ico} ${x.nome}</td><td class="n">${r.rep[x.id].qta}</td><td class="n">${eur(r.rep[x.id].imp)}</td><td class="n">${x.negativo ? '' : eur(r.rep[x.id].g)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">Nessun movimento.</td></tr>'}</tbody></table>
+ ${top.length ? `<h3 style="margin-top:18px">Tabacchi più venduti</h3><table><tbody>${top.map(([c, q]) => `<tr><td>${esc(nomeTab(c))}</td><td class="n">${q} pz</td></tr>`).join('')}</tbody></table>` : ''}</section>
+ <section class="card"><h3>Conti (${conti.length})</h3>${conti.length ? conti.slice(0, 200).map(g => htmlContoReg(g, da !== a)).join('') : '<p class="empty">Nessun conto nel periodo.</p>'}${conti.length > 200 ? '<p class="note">Mostro gli ultimi 200: il file CSV li contiene tutti.</p>' : ''}</section></div>`;
+}
+afterRender.registro = () => { for (const id of ['p-da', 'p-a']) $('#' + id)?.addEventListener('change', () => { periodo = {tipo:'libero', da:$('#p-da').value, a:$('#p-a').value}; render(); }); };
+function esportaCSV() {
+ const [da, a] = calcPeriodo(), rows = [['Data','Ora','Reparto','Descrizione','Quantità','Importo','Commissione','Pagamento','Cliente','Consegnato fuori','Guadagno stimato']];
+ for (const m of D.movimenti.filter(m => dayKey(m.t) >= da && dayKey(m.t) <= a).sort((x, y) => x.t.localeCompare(y.t))) { const g = guadagnoStimato(m); rows.push([fmtDate(dayKey(m.t)), fmtTime(m.t), REP[m.rep]?.nome, m.desc, m.qta, euroIn(m.imp), euroIn(m.comm || 0), PAGAMENTI[m.pag], m.cli ? nomeCliente(m.cli) : '', m.fuori ? 'sì' : '', g == null ? '' : euroIn(g)]); }
+ scarica(`registro_${da}_${a}.csv`, '﻿' + rows.map(r => r.map(x => `"${String(x ?? '').replace(/"/g, '""')}"`).join(';')).join('\r\n'), 'text/csv');
+}
+
+/* ============ Pagina: Impostazioni ============ */
+function pImpostazioni() {
+ const n = D.negozio, gs = [1,2,3,4,5,6,0];
+ return `<h2>Impostazioni</h2><p class="intro">Orari, ferie, aggi e copia di sicurezza.</p>
+ <div class="grid2"><div class="stack">
+ <section class="card"><h3>Negozio e orari</h3><form data-form="negozio" class="stack" style="gap:12px"><label class="field">Nome<input name="nome" value="${esc(n.nome)}"></label>
+ <div class="row"><label class="field">Mattina, apre<input type="time" name="o0a" value="${n.orari[0]?.[0] || ''}"></label><label class="field">chiude<input type="time" name="o0c" value="${n.orari[0]?.[1] || ''}"></label><label class="field">Pomeriggio, apre<input type="time" name="o1a" value="${n.orari[1]?.[0] || ''}"></label><label class="field">chiude<input type="time" name="o1c" value="${n.orari[1]?.[1] || ''}"></label></div>
+ <div class="field">Giorni di chiusura settimanale<div class="pay">${gs.map(g => `<label><input type="checkbox" name="chiuso" value="${g}" ${n.chiusoGiorni.includes(g) ? 'checked' : ''}>${GIORNI[g]}</label>`).join('')}</div></div>
+ <div class="row"><label class="field">Giorno dell’ordine<select name="giornoOrdine">${gs.map(g => `<option value="${g}" ${n.giornoOrdine === g ? 'selected' : ''}>${GIORNI[g]}</option>`).join('')}</select></label><label class="field">Giorno della consegna<select name="giornoConsegna">${gs.map(g => `<option value="${g}" ${n.giornoConsegna === g ? 'selected' : ''}>${GIORNI[g]}</option>`).join('')}</select></label></div>
+ <h3 style="margin:8px 0 0">Prezzi e aggi</h3>
+ <div class="row"><label class="field">Fotocopia B/N<input class="money" name="prezzoCopia" inputmode="decimal" value="${euroIn(n.prezzoCopia)}"></label><label class="field">Stampa B/N<input class="money" name="prezzoStampa" inputmode="decimal" value="${euroIn(n.prezzoStampa)}"></label></div>
+ <div class="row">${[['tabacchi','Tabacchi'],['gratta','Gratta e vinci'],['lotto','Lotto e giochi'],['ricariche','Ricariche']].map(([k, l]) => `<label class="field">Aggio ${l} %<input class="num" name="aggio_${k}" inputmode="decimal" value="${String(n.aggi[k]).replace('.', ',')}"></label>`).join('')}</div>
+ <p class="note">Gli aggi preimpostati sono indicativi: metti quelli del tuo contratto. Servono solo per la stima del guadagno.</p>
+ <div class="row end"><button class="primary">Salva</button></div></form></section>
+ <section class="card"><h3>Ferie e chiusure</h3>${n.ferie.length ? `<table><tbody>${[...n.ferie].sort((a, b) => a.dal.localeCompare(b.dal)).map(f => `<tr class="${f.al < today() ? 'muted' : ''}"><td>dal ${fmtDate(f.dal)} al ${fmtDate(f.al)}</td><td>${esc(f.nota || '')}</td><td><button class="small ghost" data-act="del-ferie" data-id="${f.id}">✕</button></td></tr>`).join('')}</tbody></table>` : '<p class="empty">Nessuna chiusura in programma.</p>'}
+ <form data-form="ferie" class="row" style="margin-top:10px"><label class="field">Dal<input type="date" name="dal" required></label><label class="field">Al<input type="date" name="al" required></label><label class="field" style="flex:1 1 140px">Nota<input name="nota" placeholder="es. Ferie, Patrono"></label><button>Aggiungi</button></form></section></div>
+ <div class="stack"><section class="card"><h3>Copia di sicurezza</h3><p class="note" style="margin:0 0 10px">I dati sono salvati in questo browser. Se si cancella la cronologia o si cambia computer si perdono: scarica spesso la copia (un file .json) e tienila anche su una chiavetta o sul telefono.</p>
+ <p>${n.ultimoBackup ? `Ultima copia: <b>${fmtDate(n.ultimoBackup)}</b>` : '<span class="warn">Nessuna copia fatta finora.</span>'}</p>
+ <div class="row"><button class="primary" data-act="backup">Scarica la copia</button><label class="field" style="flex:1">Ripristina da una copia<input type="file" id="ripristina" accept=".json,application/json"></label></div></section>
+ <section class="card"><h3>Listino tabacchi</h3><p>In vigore dal <b>${esc(LISTINO.vigore.toLowerCase())}</b> · ${byCode.size.toLocaleString('it-IT')} prodotti.</p><p class="note">Quando cambiano i prezzi, scarica da tabaccai.it il file «Completo» o «Modificato» (.xls) e caricalo qui.</p><div class="row" style="margin-top:8px"><button data-act="dlg-listino">Aggiorna il listino da file…</button>${localStorage.getItem(LKEY) ? '<button class="ghost" data-act="listino-base">Torna al listino incluso</button>' : ''}</div></section>
+ <section class="card"><h3>Ricomincia da zero</h3><p class="note">Cancella tutti i dati di questo browser (vendite, scorte, clienti). Fai prima una copia di sicurezza.</p><div class="row" style="margin-top:8px"><button class="danger" data-act="reset">Cancella tutto</button></div></section></div></div>`;
+}
+afterRender.impostazioni = () => { $('#ripristina')?.addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; try { const d = JSON.parse(await f.text()); if (!d || !d.negozio || !Array.isArray(d.movimenti)) throw 0; if (!confirm('Sostituire i dati attuali con quelli della copia?')) return; localStorage.setItem(KEY, JSON.stringify(d)); D = load(); toast('Dati ripristinati.'); render(); } catch (err) { toast('Il file non è una copia valida.'); } }); };
+function scarica(nome, testo, tipo) { const b = new Blob([testo], {type:tipo}), u = URL.createObjectURL(b), a = document.createElement('a'); a.href = u; a.download = nome; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000); }
+
+/* ============ Aggiornamento del listino da file .xls ============ */
+function dlgListino() {
+ openDlg('Aggiorna il listino tabacchi', `<p class="intro">Scarica da <a href="https://www.tabaccai.it/" target="_blank" rel="noopener">tabaccai.it</a> l’elenco dei prezzi e caricalo qui:</p>
+ <ul><li><b>Completo</b>: sostituisce tutto il listino; i prodotti radiati spariscono dalla ricerca.</li><li><b>Modificato</b>: aggiunge o aggiorna solo i prodotti cambiati.</li></ul>
+ <p class="note">Per leggere i file .xls serve la connessione internet (una sola volta per caricamento).</p>
+ <label class="field" style="margin-top:12px">File .xls<input type="file" id="file-listino" accept=".xls,.xlsx"></label><div id="esito-listino" style="margin-top:14px"></div>`);
+ $('#file-listino').addEventListener('change', async e => { const f = e.target.files[0]; if (f) await importaListino(f); });
+}
+function caricaSheetJS() {
+ if (window.XLSX) return Promise.resolve();
+ return new Promise((ok, ko) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload = ok; s.onerror = () => ko(new Error('Non riesco a scaricare il lettore di file Excel: controlla la connessione.')); document.head.appendChild(s); });
+}
+let listinoInArrivo = null;
+async function importaListino(file) {
+ const out = $('#esito-listino'); out.innerHTML = '<p>Leggo il file…</p>';
+ try {
+  await caricaSheetJS();
+  const wb = XLSX.read(await file.arrayBuffer(), {type:'array'}), rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {header:1, defval:''});
+  const hi = rows.findIndex(r => r.some(c => String(c).trim() === 'Codice')); if (hi < 0) throw new Error('Non trovo la colonna «Codice»: è il file giusto?');
+  const H = rows[hi].map(c => String(c).trim()), ci = n => H.findIndex(h => h.startsWith(n));
+  const iCat = ci('Categoria'), iCod = ci('Codice'), iNome = ci('Denominazione'), iPr = ci('Prezzo per confezione'), iConf = ci('Tipo di confezione');
+  const testo = rows.slice(0, hi).flat().join(' '), vig = (testo.match(/in vigore dal ([0-9]{1,2} \w+ [0-9]{4})/i) || [])[1] || '', agg = rows.slice(0, hi).flat().find(c => /aggiornato al/i.test(c)) || '';
+  const nuovi = [];
+  for (const r of rows.slice(hi + 1)) { const cod = String(r[iCod]).trim().replace(/\.0$/, ''); const pr = typeof r[iPr] === 'number' ? r[iPr] : parseFloat(String(r[iPr]).replace(',', '.')); if (!cod || !isFinite(pr)) continue; nuovi.push({cat:String(r[iCat]).trim(), cod, nome:String(r[iNome]).trim(), prezzo:pr, conf:String(r[iConf]).trim().replace(/^Confezione /, '')}); }
+  if (!nuovi.length) throw new Error('Il file non contiene prodotti.');
+  const completo = nuovi.length > 1000, nuoviMap = new Map(nuovi.map(p => [p.cod, p]));
+  const cambiati = [], aggiunti = [];
+  for (const p of nuovi) { const v = byCode.get(p.cod); if (!v) aggiunti.push(p); else if (v.prezzo !== Math.round(p.prezzo * 100)) cambiati.push([v, p]); }
+  const radiati = completo ? [...byCode.values()].filter(p => !nuoviMap.has(p.cod)) : [];
+  listinoInArrivo = {completo, nuovi, vig, agg};
+  const mio = c => D.assortimento[c] ? ' <span class="tag">tuo</span>' : '';
+  out.innerHTML = `<div class="alert info"><span>File <b>${completo ? 'completo' : 'delle variazioni'}</b>: ${nuovi.length.toLocaleString('it-IT')} prodotti${vig ? ', in vigore dal ' + esc(vig.toLowerCase()) : ''}.</span></div>
+  <p><b>${cambiati.length}</b> prezzi cambiati · <b>${aggiunti.length}</b> nuovi prodotti${completo ? ` · <b>${radiati.length}</b> radiati` : ''}</p>
+  ${cambiati.length ? `<table><thead><tr><th>Prodotto</th><th class="n">Prima</th><th class="n">Ora</th></tr></thead><tbody>${cambiati.sort((a, b) => !!D.assortimento[b[0].cod] - !!D.assortimento[a[0].cod]).slice(0, 80).map(([v, p]) => `<tr><td>${esc(p.nome)}${mio(p.cod)}</td><td class="n">${eur(v.prezzo)}</td><td class="n"><b>${eur(Math.round(p.prezzo * 100))}</b></td></tr>`).join('')}</tbody></table>` : ''}
+  ${aggiunti.length ? `<p class="note">Nuovi: ${aggiunti.slice(0, 30).map(p => esc(p.nome)).join(', ')}${aggiunti.length > 30 ? '…' : ''}</p>` : ''}
+  ${radiati.filter(p => D.assortimento[p.cod]).length ? `<p class="warn">Del tuo assortimento non sono più in listino: ${radiati.filter(p => D.assortimento[p.cod]).map(p => esc(p.nome)).join(', ')}</p>` : ''}
+  <div class="row end" style="margin-top:12px"><button class="primary" data-act="applica-listino">Applica il nuovo listino</button></div>`;
+ } catch (err) { out.innerHTML = `<div class="alert warn">${esc(err.message || err)}</div>`; }
+}
+function applicaListino() {
+ const x = listinoInArrivo; if (!x) return;
+ const cats = x.completo ? [] : [...LISTINO.categorie], prodotti = x.completo ? [] : LISTINO.prodotti.filter(p => !x.nuovi.some(n => n.cod === String(p[1])));
+ for (const p of x.nuovi) { let i = cats.indexOf(p.cat); if (i < 0) { cats.push(p.cat); i = cats.length - 1; } prodotti.push([i, p.cod, p.nome, p.prezzo, p.conf]); }
+ const nuovo = {vigore:x.vig || LISTINO.vigore, aggiornato:x.agg || LISTINO.aggiornato, categorie:cats, prodotti};
+ try { localStorage.setItem(LKEY, JSON.stringify(nuovo)); } catch (e) { toast('Spazio del browser esaurito: non riesco a salvare il listino.'); return; }
+ loadListino();
+ for (const [c, a] of Object.entries(D.assortimento)) { const p = prodotto(c); if (p) { a.prezzo = p.prezzo; a.nome = p.nome; } }
+ save(); listinoInArrivo = null; closeDlg(); toast('Listino aggiornato.'); render();
+}
+
+/* ============ Finestra di dialogo ============ */
+function openDlg(titolo, html) { $('#dlg-title').textContent = titolo; $('#dlg-body').innerHTML = html; const d = $('#dlg'); if (!d.open) d.showModal(); }
+function closeDlg() { const d = $('#dlg'); if (d.open) d.close(); }
+$('#dlg').addEventListener('close', () => render());
+
+/* ============ Eventi ============ */
+document.addEventListener('click', e => {
+ const b = e.target.closest('[data-act]'); if (!b) return;
+ const act = b.dataset.act, id = b.dataset.id;
+ const A = {
+  'dlg-close': closeDlg,
+  rep: () => { leggiLinea(); sel = id; lineaTmp = {pag:lineaTmp.pag, cliente:lineaTmp.cliente, fuori:lineaTmp.fuori}; render(); },
+  'add-linea': aggiungiLinea,
+  'del-linea': () => { conto.splice(+b.dataset.i, 1); render(); },
+  'svuota-conto': () => { conto = []; render(); },
+  'registra-conto': () => { leggiLinea(); registraConto(); },
+  storna: () => stornaConto(id),
+  'prom-fatto': () => { const p = D.promemoria.find(x => x.id === id); if (p) p.fatto = true; save(); render(); },
+  'aggiungi-tab': () => { aggiungiAssortimento(id); save(); toast('Aggiunto: ' + nomeTab(id)); render(); },
+  'rimuovi-tab': () => { if (confirm('Togliere «' + nomeTab(id) + '» dal tuo assortimento? Le vendite passate restano nel registro.')) { delete D.assortimento[id]; save(); render(); } },
+  'conta-distr': () => dlgDistributore('conta'), 'ricarica-distr': () => dlgDistributore('ricarica'),
+  'dlg-listino': dlgListino, 'applica-listino': applicaListino,
+  'listino-base': () => { if (confirm('Tornare al listino incluso nell’app?')) { localStorage.removeItem(LKEY); loadListino(); for (const [c, a] of Object.entries(D.assortimento)) { const p = prodotto(c); if (p) a.prezzo = p.prezzo; } save(); render(); } },
+  'nuovo-ordine': () => { D.ordini.push({id:uid(), creato:today(), stato:'bozza', righe:righeProposte()}); save(); render(); },
+  'ricalcola-ordine': () => { if (confirm('Ricalcolare la proposta? Le modifiche fatte a mano si perdono.')) { ordineAperto().righe = righeProposte(); save(); render(); } },
+  'elimina-ordine': () => { if (confirm('Eliminare questo ordine?')) { D.ordini = D.ordini.filter(o => o !== ordineAperto()); save(); render(); } },
+  'del-riga': () => { ordineAperto().righe.splice(+b.dataset.i, 1); save(); render(); },
+  'invia-ordine': () => { const o = ordineAperto(); o.righe = o.righe.filter(r => r.qta > 0); o.stato = 'inviato'; o.inviato = today(); save(); toast('Ordine segnato come inviato.'); render(); },
+  'ricevi-ordine': () => { const o = ordineAperto(); if (!confirm('Aggiungere la merce arrivata alle scorte del banco?')) return; for (const r of o.righe) { const q = r.arrivati ?? r.qta; r.prezzo = prezzoTab(r.cod); if (!D.assortimento[r.cod]) aggiungiAssortimento(r.cod); if (D.assortimento[r.cod]) D.assortimento[r.cod].banco += q; } o.stato = 'ricevuto'; o.ricevuto = $('#data-arrivo')?.value || today(); save(); toast('Consegna registrata.'); render(); },
+  'copia-ordine': async () => { const t = testoOrdine(ordineAperto()); try { await navigator.clipboard.writeText(t); toast('Ordine copiato: incollalo dove ti serve.'); } catch (err) { openDlg('Testo dell’ordine', `<textarea style="width:100%;min-height:300px">${esc(t)}</textarea>`); } },
+  stampa: () => window.print(),
+  'del-art': () => { const a = D.articoli.find(x => x.id === id); if (a && confirm('Eliminare «' + a.nome + '»?')) { D.articoli = D.articoli.filter(x => x.id !== id); save(); render(); } },
+  'attiva-gv': () => { const p = D.gratta.find(x => x.id === id); p.attivato = today(); save(); toast('Pacchetto attivato.'); render(); },
+  'chiudi-gv': () => { const p = D.gratta.find(x => x.id === id); const r = p.biglietti - vendutiGratta(p.id); if (r > 0 && !confirm(`Restano ${r} biglietti: chiudere comunque il pacchetto (es. reso)?`)) return; p.chiuso = today(); save(); render(); },
+  'riapri-gv': () => { const p = D.gratta.find(x => x.id === id); delete p.chiuso; save(); render(); },
+  cliente: () => dlgCliente(id),
+  'del-lib': () => { if (!confirm('Eliminare questa riga del libretto?')) return; D.libretto = D.libretto.filter(x => x.id !== id); save(); dlgCliente(b.dataset.cli); },
+  'del-cli': () => { if (confirm('Eliminare il cliente?')) { D.clienti = D.clienti.filter(c => c.id !== id); D.libretto = D.libretto.filter(x => x.cli !== id); save(); closeDlg(); } },
+  periodo: () => { periodo = {tipo:id, da:periodo.da, a:periodo.a}; render(); },
+  csv: esportaCSV,
+  backup: () => { D.negozio.ultimoBackup = today(); save(); scarica(`tabaccheria_copia_${today()}.json`, JSON.stringify(D), 'application/json'); render(); },
+  'del-ferie': () => { D.negozio.ferie = D.negozio.ferie.filter(f => f.id !== id); save(); render(); },
+  reset: () => { if (prompt('Per cancellare tutto scrivi CANCELLA') === 'CANCELLA') { D = defaults(); localStorage.removeItem(LKEY); loadListino(); save(); conto = []; render(); toast('Dati cancellati.'); } }
+ };
+ if (A[act]) { e.preventDefault(); A[act](); }
+});
+document.addEventListener('change', e => {
+ const t = e.target;
+ if (t.name === 'pag' && t.closest('.conto')) { leggiLinea(); lineaTmp.pag = t.value; render(); return; }
+ if (t.name === 'cliente' && t.closest('.conto')) { lineaTmp.cliente = t.value; return; }
+ if (t.name === 'fuori' && t.closest('.conto')) { lineaTmp.fuori = t.checked; return; }
+ if (t.name === 'art' && t.closest('#linea')) { leggiLinea(); render(); return; }
+ if (t.dataset.tab) { const a = D.assortimento[t.dataset.tab], v = int(t.value); if (a && v != null) { a[t.dataset.f] = t.dataset.f === 'multiplo' ? Math.max(1, v) : v; save(); render(); } else t.value = a?.[t.dataset.f] ?? ''; return; }
+ if (t.dataset.ord != null) { const r = ordineAperto().righe[+t.dataset.ord], v = int(t.value); if (r && v != null && v >= 0) { r.qta = v; save(); render(); } return; }
+ if (t.dataset.arr != null) { const r = ordineAperto().righe[+t.dataset.arr], v = int(t.value); if (r && v != null && v >= 0) { r.arrivati = v; save(); } return; }
+ if (t.dataset.art) { const a = D.articoli.find(x => x.id === t.dataset.art), f = t.dataset.f; if (!a) return; if (f === 'prezzo' || f === 'costo') a[f] = cents(t.value); else if (f === 'scorta' || f === 'minimo') { const v = int(t.value); if (v != null) a[f] = v; } else if (f === 'nome') a.nome = t.value.trim() || a.nome; else a[f] = t.value; save(); render(); }
+});
+document.addEventListener('keydown', e => {
+ if (e.key === 'Enter' && e.target.closest('#linea') && e.target.id !== 'tab-cerca' && e.target.tagName !== 'SELECT') { e.preventDefault(); aggiungiLinea(); }
+});
+document.addEventListener('submit', e => {
+ const f = e.target, k = f.dataset.form; if (!k) return; e.preventDefault();
+ const v = n => f.elements[n]?.value?.trim() ?? '';
+ if (k === 'prom') { D.promemoria.push({id:uid(), testo:v('testo'), data:v('data') || null, fatto:false}); }
+ else if (k === 'nuovo-art') { D.articoli.push({id:uid(), nome:v('nome'), rep:v('rep'), prezzo:cents(v('prezzo')), costo:null, scorta:int(v('scorta')) || 0, minimo:0}); }
+ else if (k === 'nuovo-gv') { const pr = cents(v('prezzo')), bi = int(v('biglietti')); if (!pr || !bi || bi <= 0) { toast('Controlla prezzo e numero di biglietti.'); return; } D.gratta.push({id:uid(), nome:v('nome'), prezzo:pr, biglietti:bi, lotto:v('lotto'), ricevuto:v('ricevuto') || today(), attivato:f.elements.attiva.checked ? today() : null}); toast('Pacchetto aggiunto.'); }
+ else if (k === 'nuovo-cli') { if (D.clienti.some(c => norm(c.nome) === norm(v('nome')))) { toast('Esiste già un cliente con questo nome.'); return; } D.clienti.push({id:uid(), nome:v('nome'), tel:v('tel'), note:v('note')}); }
+ else if (k === 'pag-cli' || k === 'deb-cli') { const imp = cents(v('imp')); if (!imp || imp <= 0) { toast('Scrivi l’importo.'); return; } D.libretto.push(k === 'pag-cli' ? {id:uid(), t:new Date().toISOString(), cli:f.dataset.id, imp:-imp, via:v('via')} : {id:uid(), t:new Date().toISOString(), cli:f.dataset.id, imp, desc:v('desc') || 'Debito'}); save(); toast(k === 'pag-cli' ? 'Pagamento registrato.' : 'Debito aggiunto.'); dlgCliente(f.dataset.id); return; }
+ else if (k === 'mod-cli') { const c = D.clienti.find(x => x.id === f.dataset.id); Object.assign(c, {nome:v('nome') || c.nome, tel:v('tel'), note:v('note')}); save(); toast('Salvato.'); dlgCliente(c.id); return; }
+ else if (k === 'negozio') {
+  const n = D.negozio; n.nome = v('nome') || n.nome; n.orari = [[v('o0a'), v('o0c')], [v('o1a'), v('o1c')]].filter(([a, c]) => a && c);
+  n.chiusoGiorni = [...f.querySelectorAll('[name=chiuso]:checked')].map(x => +x.value); n.giornoOrdine = +v('giornoOrdine'); n.giornoConsegna = +v('giornoConsegna');
+  n.prezzoCopia = cents(v('prezzoCopia')) ?? n.prezzoCopia; n.prezzoStampa = cents(v('prezzoStampa')) ?? n.prezzoStampa;
+  for (const a of ['tabacchi','gratta','lotto','ricariche']) { const x = parseFloat(v('aggio_' + a).replace(',', '.')); if (isFinite(x)) n.aggi[a] = x; }
+  toast('Impostazioni salvate.');
+ }
+ else if (k === 'ferie') { if (v('al') < v('dal')) { toast('La data finale viene prima di quella iniziale.'); return; } D.negozio.ferie.push({id:uid(), dal:v('dal'), al:v('al'), nota:v('nota')}); }
+ else if (k === 'conta-distr') {
+  const linee = [], data = v('__data') || today(), t = data === today() ? new Date().toISOString() : new Date(data + 'T20:00:00').toISOString();
+  for (const [c, a] of Object.entries(D.assortimento)) { const x = int(f.elements['c_' + c]?.value); if (x == null) continue; const venduti = a.distr - x; if (venduti > 0) linee.push({rep:'tabacchi', cod:c, qta:venduti, prezzoU:prezzoTab(c), imp:venduti * prezzoTab(c), desc:nomeTab(c)}); else if (venduti < 0) a.distr = x; }
+  if (linee.length) { registraMovimenti(linee, {pag:'distributore', da:'distributore', t}); toast(`Registrate le vendite del distributore: ${eur(linee.reduce((s, l) => s + l.imp, 0))}`); } else toast('Nessuna vendita da registrare.');
+  save(); closeDlg(); return;
+ }
+ else if (k === 'ricarica-distr') {
+  let n = 0; for (const [c, a] of Object.entries(D.assortimento)) { const x = int(f.elements['c_' + c]?.value); if (x && x > 0) { a.banco -= x; a.distr += x; n += x; } }
+  save(); toast(n ? `Spostati ${n} pezzi nel distributore.` : 'Nessun pezzo spostato.'); closeDlg(); return;
+ }
+ save(); render();
+});
+
+/* ============ Avvio ============ */
+route();
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body></html>
