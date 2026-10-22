@@ -730,4 +730,48 @@ $('info').addEventListener('click',e=>{if(e.target===$('info'))$('info').close()
 $('info').addEventListener('close',()=>{if(location.hash==='#informazioni')history.replaceState(null,'',location.pathname+location.search);});
 if(location.hash==='#informazioni')openInfo();
 loadRecipes();loadPending();buildRecipeTable();renderRecipes();loadState();refresh();startAppArchive();
-</script></body></html>
+</script><!-- Avviso browser interno di Facebook / Instagram -->
+<style>
+.inapp-bar{position:sticky;top:0;z-index:9999;margin:0 0 12px;padding:14px 46px 14px 16px;background:#fff7e6;color:#5c3b00;border-bottom:1px solid #f0c36d;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.inapp-bar p{margin:0;max-width:900px}
+.inapp-bar .inapp-hint{margin-top:8px;font-size:13px}
+.inapp-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.inapp-btn{display:inline-block;padding:8px 14px;border:0;border-radius:8px;background:#245c59;color:#fff;font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.inapp-btn-alt{background:transparent;color:#245c59;border:1px solid #245c59}
+.inapp-close{position:absolute;top:6px;right:8px;width:34px;height:34px;border:0;background:transparent;color:inherit;font-size:26px;line-height:1;cursor:pointer}
+@media (prefers-color-scheme:dark){.inapp-bar{background:#3a2a05;color:#ffe4a8;border-bottom-color:#7a5a12}}
+</style>
+<script>
+(function(){
+  var ua=navigator.userAgent||'';
+  if(!/FBAN|FBAV|FB_IAB|FBIOS|FB4A|Instagram/i.test(ua))return;
+  var isAndroid=/Android/i.test(ua),isIOS=/iPhone|iPad|iPod/i.test(ua);
+  var app=/Instagram/i.test(ua)?'Instagram':'Facebook';
+  // Facebook aggiunge ?fbclid=… (tracciamento): l'app non usa parametri, quindi li togliamo
+  var url=location.origin+location.pathname+location.hash;
+  try{if(location.search)history.replaceState(null,'',url);}catch(e){}
+  var KEY='atelier-liquidi:inapp-chiuso';
+  try{if(sessionStorage.getItem(KEY))return;}catch(e){}
+  function el(t,c,x){var n=document.createElement(t);if(c)n.className=c;if(x)n.textContent=x;return n;}
+  var bar=el('div','inapp-bar');bar.setAttribute('role','region');bar.setAttribute('aria-label','Avviso sul browser');
+  var msg=el('p');msg.appendChild(el('strong',null,'Stai usando il browser interno di '+app+'.'));
+  msg.appendChild(document.createTextNode(' Le ricette vengono salvate nel browser: se le salvi qui, restano legate a '+app+'. Per ritrovarle sempre, apri Atelier Liquidi nel tuo browser abituale.'));bar.appendChild(msg);
+  var act=el('div','inapp-actions');
+  if(isAndroid){var a=el('a','inapp-btn','Apri nel browser');a.href='intent://'+url.replace(/^https?:\/\//,'')+'#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end';act.appendChild(a);}
+  else if(isIOS){var s=el('a','inapp-btn','Apri in Safari');s.href='x-safari-'+url;act.appendChild(s);}
+  var cp=el('button','inapp-btn inapp-btn-alt','Copia link');cp.type='button';
+  cp.addEventListener('click',function(){
+    function done(){cp.textContent='Link copiato!';}
+    function fb(){var t=document.createElement('textarea');t.value=url;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();try{document.execCommand('copy');done();}catch(e){}document.body.removeChild(t);}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(done,fb);else fb();
+  });
+  act.appendChild(cp);bar.appendChild(act);
+  if(isIOS)bar.appendChild(el('p','inapp-hint','Se il pulsante non funziona: tocca ⋯ in alto a destra e scegli “Apri nel browser esterno”.'));
+  else if(!isAndroid)bar.appendChild(el('p','inapp-hint','In alternativa: apri il menu ⋯ e scegli “Apri nel browser”.'));
+  var x=el('button','inapp-close','×');x.type='button';x.setAttribute('aria-label','Chiudi avviso');
+  x.addEventListener('click',function(){bar.remove();try{sessionStorage.setItem(KEY,'1');}catch(e){}});
+  bar.appendChild(x);
+  document.body.insertBefore(bar,document.body.firstChild);
+})();
+</script>
+</body></html>
